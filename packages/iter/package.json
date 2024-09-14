@@ -1,0 +1,34 @@
+{
+  "name": "@starknt/iter",
+  "type": "module",
+  "version": "0.0.5",
+  "private": false,
+  "description": "",
+  "author": "starknt",
+  "license": "MIT",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./globals": {
+      "types": "./dist/globals.d.ts",
+      "import": "./dist/globals.js",
+      "require": "./dist/globals.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "@starknt/utils": "workspace:*"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@starknt/wechat-miniprogram-server-sdk",
+  "version": "0.0.7",
+  "private": false,
+  "description": "wechat miniprogram server sdk",
+  "author": "starknt",
+  "license": "MIT",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "prepublish": "pnpm build"
+  },
+  "peerDependencies": {
+    "@starknt/utils": ">=0.0.6"
+  },
+  "devDependencies": {
+    "@starknt/utils": "workspace:*"
+  }
+}

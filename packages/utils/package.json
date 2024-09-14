@@ -1,0 +1,44 @@
+{
+  "name": "@starknt/utils",
+  "version": "0.0.9",
+  "private": false,
+  "description": "",
+  "author": "starknt",
+  "license": "MIT",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./fetch": {
+      "types": "./dist/fetch.d.ts",
+      "import": "./dist/fetch.mjs",
+      "require": "./dist/fetch.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist",
+    "fetch.d.ts"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "@starknt/ts-results": "workspace:*",
+    "debug": "^4.3.7",
+    "p-limit": "^6.1.0",
+    "ts-pattern": "^5.3.1"
+  },
+  "optionalDependencies": {
+    "undici": "^6.19.8"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12"
+  }
+}

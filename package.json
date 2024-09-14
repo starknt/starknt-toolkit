@@ -1,0 +1,52 @@
+{
+  "name": "@pkg/monorepo",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.10.0",
+  "description": "",
+  "author": "starknt",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "stub": "pnpm -r stub",
+    "build": "pnpm -r build",
+    "test": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "postinstall": "simple-git-hooks",
+    "p": "npx zx ./scripts/publish.mjs"
+  },
+  "dependencies": {
+    "@starknt/iter": "workspace:*",
+    "@starknt/utils": "workspace:*",
+    "@starknt/wechat-miniprogram-server-sdk": "workspace:*",
+    "@starknt/wechat-pay-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.6.0",
+    "@types/node": "^22.5.5",
+    "@types/pacote": "^11.1.8",
+    "consola": "^3.2.3",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.10.0",
+    "esno": "^4.7.0",
+    "lint-staged": "^15.2.10",
+    "pacote": "^18.0.6",
+    "pnpm": "^9.10.0",
+    "simple-git-hooks": "^2.11.1",
+    "taze": "^0.16.8",
+    "tsup": "^8.2.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "unbuild": "^2.0.0",
+    "vitest": "^2.1.1",
+    "zx": "^8.1.6"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

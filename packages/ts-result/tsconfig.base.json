@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["es2022"],
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "module": "umd",
+    "moduleResolution": "node",
+    "strict": true,
+    "noImplicitReturns": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmitHelpers": false,
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "./dist"]
+}
