@@ -8,6 +8,7 @@ export default antfu(
   },
   {
     rules: {
+      'eslint-comments/no-unlimited-disable': 'off',
       'no-useless-call': 'off',
       'ts/no-namespace': 'off',
       'no-cond-assign': 'off',

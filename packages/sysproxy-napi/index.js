@@ -1,4 +1,3 @@
-/* eslint-disable eslint-comments/no-unlimited-disable */
 /* tslint:disable */
 /* eslint-disable */
 /* prettier-ignore */
@@ -310,3 +309,9 @@ if (!nativeBinding) {
   }
   throw new Error(`Failed to load native binding`)
 }
+
+const { triggerManualProxy, triggerManualProxyByUrl, triggerAutoProxy } = nativeBinding
+
+module.exports.triggerManualProxy = triggerManualProxy
+module.exports.triggerManualProxyByUrl = triggerManualProxyByUrl
+module.exports.triggerAutoProxy = triggerAutoProxy
