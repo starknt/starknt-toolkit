@@ -176,7 +176,10 @@ impl Sysproxy {
         if self.port.is_none() {
           set_global_proxy(self.host.clone(), self.bypass.clone())
         } else {
-          set_global_proxy(format!("{}:{}", self.host, self.port), self.bypass.clone())
+          set_global_proxy(
+            format!("{}:{}", self.host, self.port.unwrap()),
+            self.bypass.clone(),
+          )
         }
       }
       false => unset_proxy(),
