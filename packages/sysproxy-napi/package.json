@@ -1,11 +1,14 @@
 {
   "name": "@starknt/sysproxy",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": false,
   "description": "sysproxy for nodejs fork from mihomo-party-org",
   "author": "mihomo-party-org",
   "license": "MIT",
-  "keywords": ["sysproxy", "proxy"],
+  "keywords": [
+    "sysproxy",
+    "proxy"
+  ],
   "sideEffects": false,
   "main": "index.js",
   "types": "index.d.ts",
@@ -34,6 +37,15 @@
     "prepublishOnly": "napi prepublish -t npm",
     "universal": "napi universal",
     "version": "napi version"
+  },
+  "optionalDependencies": {
+    "@starknt/sysproxy-darwin-arm64": "0.0.1",
+    "@starknt/sysproxy-darwin-x64": "0.0.1",
+    "@starknt/sysproxy-linux-arm64-gnu": "0.0.1",
+    "@starknt/sysproxy-linux-x64-gnu": "0.0.1",
+    "@starknt/sysproxy-win32-arm64-msvc": "0.0.1",
+    "@starknt/sysproxy-win32-ia32-msvc": "0.0.1",
+    "@starknt/sysproxy-win32-x64-msvc": "0.0.1"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4"
