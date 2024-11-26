@@ -1,0 +1,20 @@
+{
+  "name": "@starknt/sysproxy-win32-x64-msvc",
+  "version": "0.0.0",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "description": "Use Node.js to modify system proxy settings, support Windows, MacOS, Linux (Gnome/KDE)",
+  "license": "GPL-3.0-only",
+  "repository": "https://github.com/starknt/starknt-toolkit",
+  "main": "sysproxy.win32-x64-msvc.node",
+  "files": [
+    "sysproxy.win32-x64-msvc.node"
+  ],
+  "engines": {
+    "node": ">= 10"
+  }
+}

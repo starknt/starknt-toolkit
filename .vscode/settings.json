@@ -1,4 +1,7 @@
 {
-  "eslint.experimental.useFlatConfig": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "rust-analyzer.linkedProjects": [
+    "packages/sysproxy-napi/Cargo.toml"
+  ],
+  "rust-analyzer.procMacro.ignored": { "napi-derive": ["napi"] }
 }
