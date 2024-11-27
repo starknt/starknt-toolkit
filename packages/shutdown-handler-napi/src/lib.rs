@@ -7,6 +7,7 @@ mod platform_impl;
 mod windows {
   use napi::{JsBigInt, JsFunction};
   use napi_derive::napi;
+  use std::ffi::c_void;
 
   use crate::platform_impl::power;
 
@@ -14,7 +15,7 @@ mod windows {
   pub fn set_main_window_handle(bigint: JsBigInt) {
     unsafe {
       if let Ok((h_wnd, _)) = bigint.get_u64() {
-        power::set_main_window_handle(windows::Win32::Foundation::HWND(h_wnd as isize));
+        power::set_main_window_handle(windows::Win32::Foundation::HWND(h_wnd as *mut c_void));
       }
     }
   }
