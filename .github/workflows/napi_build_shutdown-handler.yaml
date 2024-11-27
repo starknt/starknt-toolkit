@@ -2,8 +2,8 @@ name: Build N-API
 
 env:
   DEBUG: napi:*
-  APP_NAME: sysproxy
-  APP_DIR: packages/sysproxy-napi
+  APP_NAME: shutdown-handler-napi
+  APP_DIR: packages/shutdown-handler-napi
   MACOSX_DEPLOYMENT_TARGET: '10.13'
 
 on:
@@ -12,7 +12,7 @@ on:
     branches:
       - main
     paths:
-      - 'packages/sysproxy-napi/**'
+      - 'packages/shutdown-handler-napi/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -87,7 +87,7 @@ jobs:
             build: |
               cd $APP_DIR
               pnpm build --target aarch64-pc-windows-msvc
-    name: stable - ${{ matrix.settings.target }} - node@16
+    name: stable - ${{ matrix.settings.target }} - node@20
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
@@ -119,11 +119,6 @@ jobs:
         with:
           path: ~/.cargo/git
           key: ${{ matrix.settings.target }}-cargo-index
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.APP_DIR }}/node_modules
-          key: npm-cache-build-${{ matrix.settings.target }}-node@16
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
@@ -143,7 +138,7 @@ jobs:
         if: ${{ !matrix.settings.docker }}
         shell: bash
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
           path: ${{ env.APP_DIR }}/${{ env.APP_NAME }}.*.node
@@ -168,7 +163,7 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: pnpm install --no-frozen-lockfile --registry https://registry.npmjs.org
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ${{ env.APP_DIR }}/artifacts
       - name: Move artifacts

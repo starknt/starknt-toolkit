@@ -1,7 +1,8 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "rust-analyzer.linkedProjects": [
-    "packages/sysproxy-napi/Cargo.toml"
+    "packages/sysproxy-napi/Cargo.toml",
+    "packages/shutdown-handler-napi/Cargo.toml"
   ],
   "rust-analyzer.procMacro.ignored": { "napi-derive": ["napi"] }
 }
