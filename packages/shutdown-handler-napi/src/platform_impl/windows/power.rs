@@ -17,7 +17,7 @@ pub static mut FN: Option<ThreadsafeFunction<i64>> = None;
 /// Low api implement windows 'shutdown' event for electron
 /// ref: https://github.com/paymoapp/electron-shutdown-handler/blob/master/module/WinShutdownHandler.cpp
 
-pub unsafe fn set_main_window_handle(h_wnd: HWND) -> () {
+pub unsafe fn set_main_window_handle(h_wnd: HWND) {
   MAIN_WINDOW = h_wnd;
 
   SetProcessShutdownParameters(0x3FF, 0);
@@ -38,10 +38,18 @@ pub unsafe fn insert_wnd_proc_hook(callback: JsFunction) -> bool {
     return false;
   }
 
-  PREV_WND_PROC = Some(std::mem::transmute(SetWindowLongPtrW(
+  PREV_WND_PROC = Some(std::mem::transmute::<
+    isize,
+    unsafe extern "system" fn(
+      windows::Win32::Foundation::HWND,
+      u32,
+      windows::Win32::Foundation::WPARAM,
+      windows::Win32::Foundation::LPARAM,
+    ) -> windows::Win32::Foundation::LRESULT,
+  >(SetWindowLongPtrW(
     MAIN_WINDOW,
     GWLP_WNDPROC,
-    window_proc as _,
+    window_proc as isize,
   )));
 
   true
@@ -91,8 +99,8 @@ unsafe extern "system" fn window_proc(
   l_param: LPARAM,
 ) -> LRESULT {
   if event == WM_QUERYENDSESSION {
-    if let Some(func) = addr_of!(FN) {
-      func.call(Ok(l_param.0 as _));
+    if let Some(func) = FN.as_ref() {
+      func.call(Ok(l_param.0 as _), ThreadsafeFunctionCallMode::Blocking);
     }
 
     if SHOULD_BLOCK_SHUTDOWN {
@@ -100,10 +108,8 @@ unsafe extern "system" fn window_proc(
     }
 
     return LRESULT(1);
-  } else if event == WM_ENDSESSION {
-    if w_param.0 == 0 {
-      return LRESULT(0);
-    }
+  } else if event == WM_ENDSESSION && w_param.0 == 0 {
+    return LRESULT(0);
   }
 
   CallWindowProcW(PREV_WND_PROC, h_wnd, event, w_param, l_param)
