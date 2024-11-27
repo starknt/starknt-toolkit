@@ -1,6 +1,7 @@
 use napi::threadsafe_function::{ThreadsafeFunction, ThreadsafeFunctionCallMode};
 use napi::JsFunction;
 
+use std::ptr::addr_of;
 use windows::core::PCWSTR;
 use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM};
 use windows::Win32::System::Shutdown::{ShutdownBlockReasonCreate, ShutdownBlockReasonDestroy};
@@ -80,7 +81,7 @@ pub unsafe fn release_shutdown_block() -> bool {
   let result = ShutdownBlockReasonDestroy(MAIN_WINDOW);
   SHOULD_BLOCK_SHUTDOWN = false;
 
-  result.into()
+  result.is_ok()
 }
 
 unsafe extern "system" fn window_proc(
