@@ -1,7 +1,6 @@
 use napi::threadsafe_function::{ThreadsafeFunction, ThreadsafeFunctionCallMode};
 use napi::JsFunction;
 
-use std::ptr::addr_of;
 use windows::core::PCWSTR;
 use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM};
 use windows::Win32::System::Shutdown::{ShutdownBlockReasonCreate, ShutdownBlockReasonDestroy};
@@ -34,22 +33,14 @@ pub unsafe fn insert_wnd_proc_hook(callback: JsFunction) -> bool {
     return false;
   }
 
-  if let Some(_) = PREV_WND_PROC {
+  if PREV_WND_PROC.is_some() {
     return false;
   }
 
-  PREV_WND_PROC = Some(std::mem::transmute::<
-    isize,
-    unsafe extern "system" fn(
-      windows::Win32::Foundation::HWND,
-      u32,
-      windows::Win32::Foundation::WPARAM,
-      windows::Win32::Foundation::LPARAM,
-    ) -> windows::Win32::Foundation::LRESULT,
-  >(SetWindowLongPtrW(
+  PREV_WND_PROC = Some(std::mem::transmute(SetWindowLongPtrW(
     MAIN_WINDOW,
     GWLP_WNDPROC,
-    window_proc as isize,
+    window_proc as _,
   )));
 
   true
