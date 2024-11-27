@@ -90,8 +90,8 @@ unsafe extern "system" fn window_proc(
   l_param: LPARAM,
 ) -> LRESULT {
   if event == WM_QUERYENDSESSION {
-    if let Some(func) = &FN {
-      func.call(Ok(l_param.0 as _), ThreadsafeFunctionCallMode::Blocking);
+    if let Some(func) = addr_of!(FN) {
+      func.call(Ok(l_param.0 as _));
     }
 
     if SHOULD_BLOCK_SHUTDOWN {

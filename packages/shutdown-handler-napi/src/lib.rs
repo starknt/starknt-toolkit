@@ -5,11 +5,9 @@ mod platform_impl;
 
 #[cfg(target_os = "windows")]
 mod windows {
+  use crate::platform_impl::power;
   use napi::{JsBigInt, JsFunction};
   use napi_derive::napi;
-  use std::ffi::c_void;
-
-  use crate::platform_impl::power;
 
   #[napi]
   pub fn set_main_window_handle(bigint: JsBigInt) {
