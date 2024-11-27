@@ -8,9 +8,9 @@
     "ia32"
   ],
   "license": "LGPL-3.0-or-later",
-  "main": "platform-napi.win32-ia32-msvc.node",
+  "main": "shutdown-handler-napi.win32-ia32-msvc.node",
   "files": [
-    "platform-napi.win32-ia32-msvc.node"
+    "shutdown-handler-napi.win32-ia32-msvc.node"
   ],
   "engines": {
     "node": ">= 10"
