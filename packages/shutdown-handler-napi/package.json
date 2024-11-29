@@ -1,6 +1,6 @@
 {
   "name": "@starknt/shutdown-handler-napi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js binding for Rust",
   "license": "LGPL-3.0-or-later",
   "homepage": "https://github.com/natmri/toolkit",
@@ -35,13 +35,13 @@
     "version": "napi version"
   },
   "optionalDependencies": {
-    "@starknt/shutdown-handler-napi-darwin-arm64": "0.0.1",
-    "@starknt/shutdown-handler-napi-darwin-x64": "0.0.1",
-    "@starknt/shutdown-handler-napi-linux-arm64-gnu": "0.0.1",
-    "@starknt/shutdown-handler-napi-linux-x64-gnu": "0.0.1",
-    "@starknt/shutdown-handler-napi-win32-arm64-msvc": "0.0.1",
-    "@starknt/shutdown-handler-napi-win32-ia32-msvc": "0.0.1",
-    "@starknt/shutdown-handler-napi-win32-x64-msvc": "0.0.1"
+    "@starknt/shutdown-handler-napi-darwin-arm64": "0.0.2",
+    "@starknt/shutdown-handler-napi-darwin-x64": "0.0.2",
+    "@starknt/shutdown-handler-napi-linux-arm64-gnu": "0.0.2",
+    "@starknt/shutdown-handler-napi-linux-x64-gnu": "0.0.2",
+    "@starknt/shutdown-handler-napi-win32-arm64-msvc": "0.0.2",
+    "@starknt/shutdown-handler-napi-win32-ia32-msvc": "0.0.2",
+    "@starknt/shutdown-handler-napi-win32-x64-msvc": "0.0.2"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.2"
