@@ -6,14 +6,16 @@ mod platform_impl;
 #[cfg(target_os = "windows")]
 mod windows {
   use crate::platform_impl::power;
-  use napi::{JsBigInt, JsFunction};
+  use napi::{JsBuffer, JsFunction};
   use napi_derive::napi;
 
   #[napi]
-  pub fn set_main_window_handle(bigint: JsBigInt) {
+  pub fn set_main_window_handle(buf: JsBuffer) {
     unsafe {
-      if let Ok((h_wnd, _)) = bigint.get_u64() {
-        power::set_main_window_handle(windows::Win32::Foundation::HWND(h_wnd as isize));
+      if let Ok(n) = buf.coerce_to_number() {
+        if let Ok(h_wnd) = n.get_int64() {
+          power::set_main_window_handle(windows::Win32::Foundation::HWND(h_wnd as isize));
+        }
       }
     }
   }
@@ -43,11 +45,11 @@ mod windows {
 
 #[cfg(target_os = "linux")]
 mod linux {
-  use napi::{JsBigInt, JsFunction};
+  use napi::{JsBuffer, JsFunction};
   use napi_derive::napi;
 
   #[napi]
-  pub fn set_main_window_handle(bigint: JsBigInt) {}
+  pub fn set_main_window_handle(bigint: JsBuffer) {}
 
   #[napi]
   pub fn insert_wnd_proc_hook(callback: JsFunction) {}
@@ -70,11 +72,11 @@ mod linux {
 
 #[cfg(target_os = "macos")]
 mod macos {
-  use napi::{JsBigInt, JsFunction};
+  use napi::{JsBuffer, JsFunction};
   use napi_derive::napi;
 
   #[napi]
-  pub fn set_main_window_handle(bigint: JsBigInt) {}
+  pub fn set_main_window_handle(bigint: JsBuffer) {}
 
   #[napi]
   pub fn insert_wnd_proc_hook(callback: JsFunction) {}
