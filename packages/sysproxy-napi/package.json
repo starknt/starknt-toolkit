@@ -1,6 +1,6 @@
 {
   "name": "@starknt/sysproxy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "description": "sysproxy for nodejs fork from mihomo-party-org",
   "author": "mihomo-party-org",
@@ -39,13 +39,13 @@
     "version": "napi version"
   },
   "optionalDependencies": {
-    "@starknt/sysproxy-darwin-arm64": "0.0.2",
-    "@starknt/sysproxy-darwin-x64": "0.0.2",
-    "@starknt/sysproxy-linux-arm64-gnu": "0.0.2",
-    "@starknt/sysproxy-linux-x64-gnu": "0.0.2",
-    "@starknt/sysproxy-win32-arm64-msvc": "0.0.2",
-    "@starknt/sysproxy-win32-ia32-msvc": "0.0.2",
-    "@starknt/sysproxy-win32-x64-msvc": "0.0.2"
+    "@starknt/sysproxy-darwin-arm64": "0.0.3",
+    "@starknt/sysproxy-darwin-x64": "0.0.3",
+    "@starknt/sysproxy-linux-arm64-gnu": "0.0.3",
+    "@starknt/sysproxy-linux-x64-gnu": "0.0.3",
+    "@starknt/sysproxy-win32-arm64-msvc": "0.0.3",
+    "@starknt/sysproxy-win32-ia32-msvc": "0.0.3",
+    "@starknt/sysproxy-win32-x64-msvc": "0.0.3"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4"
