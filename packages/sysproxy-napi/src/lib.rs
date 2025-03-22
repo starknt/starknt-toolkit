@@ -11,9 +11,6 @@ mod macos;
 #[cfg(target_os = "windows")]
 mod windows;
 
-// #[cfg(feature = "utils")]
-pub mod utils;
-
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Sysproxy {
   pub enable: bool,
