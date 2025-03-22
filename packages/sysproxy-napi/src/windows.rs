@@ -15,6 +15,7 @@ use winreg::{enums, RegKey};
 pub use windows::core::Error as Win32Error;
 
 const SUB_KEY: &str = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
+const BYPASS_LOCAL_LEY: &str = "<local>";
 
 /// unset proxy
 fn unset_proxy() -> Result<()> {
@@ -31,7 +32,7 @@ fn unset_proxy() -> Result<()> {
     dwSize: size_of::<INTERNET_PER_CONN_OPTION_LISTW>() as u32,
     dwOptionCount: 1,
     dwOptionError: 0,
-    pOptions: p_opts.as_mut_ptr() as *mut INTERNET_PER_CONN_OPTIONW,
+    pOptions: p_opts.as_mut_ptr(),
     pszConnection: PWSTR::null(),
   };
   let res = apply(&opts);
@@ -62,7 +63,7 @@ fn set_auto_proxy(server: String) -> Result<()> {
     dwSize: size_of::<INTERNET_PER_CONN_OPTION_LISTW>() as u32,
     dwOptionCount: 2,
     dwOptionError: 0,
-    pOptions: p_opts.as_mut_ptr() as *mut INTERNET_PER_CONN_OPTIONW,
+    pOptions: p_opts.as_mut_ptr(),
     pszConnection: PWSTR::null(),
   };
 
@@ -75,7 +76,18 @@ fn set_auto_proxy(server: String) -> Result<()> {
 }
 
 /// set global proxy
-fn set_global_proxy(server: String, bypass: String) -> Result<()> {
+fn set_global_proxy(server: String, bypass: String, bypass_local: Option<bool>) -> Result<()> {
+  let mut bypass: Vec<&str> = bypass.split(';').collect();
+  if let Some(bypass_local) = bypass_local {
+    if bypass_local && !bypass.contains(&BYPASS_LOCAL_LEY) {
+      bypass.push(BYPASS_LOCAL_LEY);
+    }
+
+    if !bypass_local && bypass.contains(&BYPASS_LOCAL_LEY) {
+      bypass.retain(|b| b != &BYPASS_LOCAL_LEY);
+    }
+  }
+
   let mut p_opts = ManuallyDrop::new(Vec::<INTERNET_PER_CONN_OPTIONW>::with_capacity(3));
   p_opts.push(INTERNET_PER_CONN_OPTIONW {
     dwOption: INTERNET_PER_CONN_FLAGS,
@@ -91,6 +103,8 @@ fn set_global_proxy(server: String, bypass: String) -> Result<()> {
       pszValue: PWSTR::from_raw(s.as_ptr() as *mut u16),
     },
   });
+
+  let bypass = bypass.join(";");
 
   let mut b = ManuallyDrop::new(
     bypass
@@ -110,7 +124,7 @@ fn set_global_proxy(server: String, bypass: String) -> Result<()> {
     dwSize: size_of::<INTERNET_PER_CONN_OPTION_LISTW>() as u32,
     dwOptionCount: 3,
     dwOptionError: 0,
-    pOptions: p_opts.as_mut_ptr() as *mut INTERNET_PER_CONN_OPTIONW,
+    pOptions: p_opts.as_mut_ptr(),
     pszConnection: PWSTR::null(),
   };
 
@@ -150,6 +164,9 @@ impl Sysproxy {
       .get_value::<String, _>("ProxyServer")
       .unwrap_or("".into());
     let server = server.as_str();
+    let proxy_override = cur_var
+      .get_value::<String, _>("ProxyOverride")
+      .unwrap_or("".into());
 
     let (host, port) = if server.is_empty() {
       ("".into(), 0)
@@ -161,12 +178,14 @@ impl Sysproxy {
     };
 
     let bypass = cur_var.get_value("ProxyOverride").unwrap_or("".into());
+    let bypass_local = Some(proxy_override.contains("<local>"));
 
     Ok(Sysproxy {
       enable,
       host,
       port: Some(port),
       bypass,
+      bypass_local,
     })
   }
 
@@ -174,11 +193,12 @@ impl Sysproxy {
     match self.enable {
       true => {
         if self.port.is_none() {
-          set_global_proxy(self.host.clone(), self.bypass.clone())
+          set_global_proxy(self.host.clone(), self.bypass.clone(), self.bypass_local)
         } else {
           set_global_proxy(
             format!("{}:{}", self.host, self.port.unwrap()),
             self.bypass.clone(),
+            self.bypass_local,
           )
         }
       }

@@ -20,6 +20,8 @@ pub struct Sysproxy {
   pub host: String,
   pub port: Option<u16>,
   pub bypass: String,
+  #[cfg(target_os = "windows")]
+  pub bypass_local: Option<bool>,
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -85,6 +87,7 @@ pub fn trigger_manual_proxy(
     host,
     port: Some(port),
     bypass,
+    bypass_local: None,
   };
   match sys.set_system_proxy() {
     Ok(_) => Ok(()),
@@ -100,12 +103,14 @@ pub fn trigger_manual_proxy_by_url(
   enable: bool,
   url: String,
   bypass: String,
+  bypass_local: bool,
 ) -> std::result::Result<(), napi::Error> {
   let sys = Sysproxy {
     enable,
     host: url,
     port: None,
     bypass,
+    bypass_local: Some(bypass_local),
   };
   match sys.set_system_proxy() {
     Ok(_) => Ok(()),
