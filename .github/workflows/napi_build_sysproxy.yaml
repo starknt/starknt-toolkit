@@ -135,6 +135,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ${{ env.APP_DIR }}/artifacts
+      - name: create npm dirs
+        working-directory: ${{ env.APP_DIR }}
+        run: pnpm napi create-npm-dirs
       - name: Move artifacts
         working-directory: ${{ env.APP_DIR }}
         run: pnpm artifacts
@@ -145,6 +148,7 @@ jobs:
       - name: Publish
         working-directory: ${{ env.APP_DIR }}
         run: |
+          npm config set provenance true
           if git log -1 --pretty=%B | grep "chore: release v[0-9]\+\.[0-9]\+\.[0-9]\+$";
           then
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
