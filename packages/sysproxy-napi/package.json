@@ -48,6 +48,6 @@
     "@starknt/sysproxy-win32-x64-msvc": "0.0.3"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.18.4"
+    "@napi-rs/cli": "3.0.0-alpha.75"
   }
 }
