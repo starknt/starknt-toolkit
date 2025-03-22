@@ -343,6 +343,7 @@ fn get_proxy(service: &str) -> Result<Sysproxy> {
         host: String::from(host),
         port: Some(port),
         bypass: "".into(),
+        bypass_local: None,
       })
     }
     _ => {

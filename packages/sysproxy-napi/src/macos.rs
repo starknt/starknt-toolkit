@@ -233,6 +233,7 @@ fn get_proxy(proxy_type: ProxyType, service: &str) -> Result<Sysproxy> {
     host,
     port: Some(port),
     bypass: "".into(),
+    bypass_local: None,
   })
 }
 
