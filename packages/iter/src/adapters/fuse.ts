@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
-import { None, Some } from '@starknt/utils'
 import type { Iterator } from '../traits/iter'
+import { None, Some } from '@starknt/utils'
 
 function and_then_or_clear<T, U>(opt: Option<T>, f: (t: T) => Option<U>): Option<U> {
   if (opt.isNone())
@@ -13,7 +13,7 @@ function and_then_or_clear<T, U>(opt: Option<T>, f: (t: T) => Option<U>): Option
   return x
 }
 
-export class Fuse<Item, I extends Iterator<Item> = Iterator<Item>> {
+export class Fuse<const Item, I extends Iterator<Item> = Iterator<Item>> {
   // NOTE: for `I: FusedIterator`, we never bother setting `None`, but
   // we still have to be prepared for that state due to variance.
   protected iter: Option<I>
@@ -56,7 +56,7 @@ export class Fuse<Item, I extends Iterator<Item> = Iterator<Item>> {
           return None
         this.iter = None
 
-        return Some(acc)
+        return _acc
       },
       None: () => {
         return Some(acc)

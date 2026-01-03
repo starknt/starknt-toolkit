@@ -1,7 +1,7 @@
-import { Some } from '@starknt/utils'
 import type { Option } from '@starknt/utils'
 import type { IntoIterator } from '../interfaces/iter'
 import type { Iterator } from '../traits/iter'
+import { None, Some } from '@starknt/utils'
 
 function filter_try_fold<T, Acc, R extends Option<Acc> = Option<Acc>>(
   predicate: (item: T) => boolean,
@@ -27,7 +27,7 @@ function filter_fold<T, Acc>(
   }
 }
 
-export class Filter<Item, I extends Iterator<Item> = Iterator<Item>, P extends (item: Item) => boolean = (item: Item) => boolean> implements IntoIterator<Item> {
+export class Filter<const Item, I extends Iterator<Item> = Iterator<Item>, P extends (item: Item) => boolean = (item: Item) => boolean> implements IntoIterator<Item> {
   protected iter: I
   protected predicate: P
 
@@ -37,7 +37,12 @@ export class Filter<Item, I extends Iterator<Item> = Iterator<Item>, P extends (
   }
 
   next(): Option<Item> {
-    return this.iter.find(this.predicate)
+    let item: Option<Item>
+    while ((item = this.iter.next()) && item.isSome()) {
+      if (this.predicate(item.value))
+        return item
+    }
+    return None
   }
 
   count(): number {

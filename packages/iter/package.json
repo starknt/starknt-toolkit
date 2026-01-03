@@ -3,10 +3,17 @@
   "type": "module",
   "version": "0.0.5",
   "private": false,
-  "description": "",
+  "description": "TypeScript iterator library inspired by Rust's Iterator trait",
   "author": "starknt",
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "iterator",
+    "rust",
+    "iter",
+    "functional",
+    "typescript",
+    "lazy"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,10 +32,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "prepublish": "pnpm build"
+    "build": "tsdown",
+    "prepublish": "pnpm build",
+    "test": "vitest --run",
+    "lint:fix": "eslint {src,tsdown.config.ts} --fix"
   },
   "dependencies": {
     "@starknt/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "tsdown": "^0.19.0-beta.2"
   }
 }

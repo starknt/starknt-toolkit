@@ -1,7 +1,7 @@
 import type { Option, Result } from '@starknt/utils'
 import type { DoubleEndedIterator } from '../traits/double_ended'
 
-export class Rev<Item, I extends DoubleEndedIterator<Item> = DoubleEndedIterator<Item>> {
+export class Rev<const Item, I extends DoubleEndedIterator<Item> = DoubleEndedIterator<Item>> {
   protected iter: I
 
   constructor(iter: I) {

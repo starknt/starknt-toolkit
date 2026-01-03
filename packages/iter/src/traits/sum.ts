@@ -1,8 +1,8 @@
 import type { Option } from '@starknt/utils'
-import { None } from '@starknt/utils'
 import type { Iterator } from './iter'
+import { None } from '@starknt/utils'
 
-export class Sum<Item> {
+export class Sum<const Item> {
   next(): Option<Item> {
     return None
   }

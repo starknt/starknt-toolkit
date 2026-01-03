@@ -19,7 +19,6 @@
       "aarch64-apple-darwin",
       "x86_64-unknown-linux-gnu",
       "aarch64-unknown-linux-gnu",
-      "aarch64-pc-windows-msvc",
       "x86_64-pc-windows-msvc",
       "i686-pc-windows-msvc",
       "aarch64-pc-windows-msvc"
@@ -50,7 +49,7 @@
     "@starknt/sysproxy-win32-x64-msvc": "0.0.3"
   },
   "devDependencies": {
-    "@napi-rs/cli": "3.0.0-alpha.75"
+    "@napi-rs/cli": "^3.5.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

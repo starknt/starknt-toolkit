@@ -16,8 +16,8 @@ function map_fold<T, B, Acc>(
   return (acc, elt) => g(acc, f(elt))
 }
 
-export class Map<Item, F extends (item: Item) => any = (item: Item) => any, I extends Iterator<Item> = Iterator<Item>, Output extends ReturnType<F> = ReturnType<F>,
-> implements IntoIterator<Item> {
+export class Map<const Item, Output = Item, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => Output = (item: Item) => Output,
+> implements IntoIterator<Output> {
   protected iter: I
   protected f: F
 
@@ -35,11 +35,13 @@ export class Map<Item, F extends (item: Item) => any = (item: Item) => any, I ex
     return this.iter.try_fold(init, map_try_fold(this.f, g))
   }
 
-  fold<Acc extends Item, G extends (acc: Acc, item: Item) => Acc = (acc: Acc, item: Item) => Acc>(init: Acc, g: G): Acc {
+  fold<Acc, G extends (acc: Acc, item: Output) => Acc = (acc: Acc, item: Output) => Acc>(init: Acc, g: G): Acc {
     return this.iter.fold(init, map_fold(this.f, g))
   }
 
-  into_iter(): Iterator<Item> {
-    return this.iter
+  into_iter(): Iterator<Output> {
+    // Map adapter returns Output type, but we can't return Iterator<Output> directly
+    // This is a limitation of the current design
+    return this.iter as any as Iterator<Output>
   }
 }

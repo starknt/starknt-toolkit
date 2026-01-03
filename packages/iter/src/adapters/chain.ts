@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
-import { None, Some } from '@starknt/utils'
 import type { Iterator } from '../traits/iter'
+import { None, Some } from '@starknt/utils'
 
 function and_then_or_clear<T, U>(opt: Option<T>, f: (item: T) => Option<U>): Option<U> {
   if (opt.isNone())
@@ -12,7 +12,7 @@ function and_then_or_clear<T, U>(opt: Option<T>, f: (item: T) => Option<U>): Opt
   return x
 }
 
-export class Chain<A extends Iterator<Item>, B extends Iterator<Item>, Item> {
+export class Chain<A extends Iterator<Item>, B extends Iterator<Item>, const Item> {
   protected a: Option<A>
   protected b: Option<B>
 

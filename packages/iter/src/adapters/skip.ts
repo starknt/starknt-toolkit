@@ -1,7 +1,8 @@
-import { None, type Option, Some } from '@starknt/utils'
+import type { Option } from '@starknt/utils'
 import type { Iterator } from '../traits/iter'
+import { None, Some } from '@starknt/utils'
 
-export class Skip<Item, I extends Iterator<Item> = Iterator<Item>> implements Iterator<Item> {
+export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> implements Iterator<Item> {
   protected iter: I
   protected n: number
 

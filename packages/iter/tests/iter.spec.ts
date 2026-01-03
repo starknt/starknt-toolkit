@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { DoubleEndedIterator, Iterator, once } from '@starknt/iter'
 import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
-import '@starknt/iter/globals'
+import { describe, expect, it } from 'vitest'
+import { DoubleEndedIterator, Iterator, once } from '../src'
+import '../src/globals'
 
 class Iter extends Iterator<number> {
   private max: number = 10
@@ -26,6 +26,15 @@ class DoubleIter extends DoubleEndedIterator<number> {
 
   constructor() {
     super()
+  }
+
+  next(): Option<number> {
+    if (this.max > 0) {
+      this.max--
+      return Some(this.max)
+    }
+
+    return None
   }
 
   next_back(): Option<number> {
@@ -88,18 +97,18 @@ describe('iter', () => {
 
     const fm = iter.filter_map(x => x > 5 ? Some(x * 2) : None)
 
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(None)
-    expect(fm.next()).toStrictEqual(Some(6 * 2))
-    expect(fm.next()).toStrictEqual(Some(7 * 2))
-    expect(fm.next()).toStrictEqual(Some(8 * 2))
     expect(fm.next()).toStrictEqual(Some(9 * 2))
-    expect(fm.next()).toStrictEqual(Some(None))
-    expect(fm.next()).toStrictEqual(Some(None))
+    expect(fm.next()).toStrictEqual(Some(8 * 2))
+    expect(fm.next()).toStrictEqual(Some(7 * 2))
+    expect(fm.next()).toStrictEqual(Some(6 * 2))
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
+    expect(fm.next()).toStrictEqual(None)
   })
 
   it('last', () => {
@@ -169,6 +178,56 @@ describe('iter', () => {
   it('rev', () => {
     const iter = new DoubleIter()
 
-    expect(iter.rev().next()).toStrictEqual(Some(0))
+    expect(iter.rev().next()).toStrictEqual(Some(9))
+  })
+
+  it('flat_map', () => {
+    const iter = new Iter()
+
+    const fm = iter.flat_map<number>(x => [x, x * 2].iter())
+
+    expect(fm.next()).toStrictEqual(Some(9))
+    expect(fm.next()).toStrictEqual(Some(18))
+    expect(fm.next()).toStrictEqual(Some(8))
+    expect(fm.next()).toStrictEqual(Some(16))
+  })
+
+  it('flatten', () => {
+    const nested = [[1, 2].iter(), [3, 4].iter()].iter()
+    const flattened = nested.flatten()
+
+    expect(flattened.next()).toStrictEqual(Some(1))
+    expect(flattened.next()).toStrictEqual(Some(2))
+    expect(flattened.next()).toStrictEqual(Some(3))
+    expect(flattened.next()).toStrictEqual(Some(4))
+    expect(flattened.next()).toStrictEqual(None)
+  })
+
+  it('step_by', () => {
+    const iter = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].iter()
+
+    const stepped = iter.step_by(2)
+
+    expect(stepped.next()).toStrictEqual(Some(1))
+    expect(stepped.next()).toStrictEqual(Some(3))
+    expect(stepped.next()).toStrictEqual(Some(5))
+    expect(stepped.next()).toStrictEqual(Some(7))
+    expect(stepped.next()).toStrictEqual(Some(9))
+    expect(stepped.next()).toStrictEqual(None)
+  })
+
+  it('peekable', () => {
+    const iter = [1, 2, 3].iter()
+    const peekable = iter.peekable()
+
+    expect(peekable.peek()).toStrictEqual(Some(1))
+    expect(peekable.peek()).toStrictEqual(Some(1))
+    expect(peekable.next()).toStrictEqual(Some(1))
+    expect(peekable.peek()).toStrictEqual(Some(2))
+    expect(peekable.next()).toStrictEqual(Some(2))
+    expect(peekable.peek()).toStrictEqual(Some(3))
+    expect(peekable.next()).toStrictEqual(Some(3))
+    expect(peekable.peek()).toStrictEqual(None)
+    expect(peekable.next()).toStrictEqual(None)
   })
 })

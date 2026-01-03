@@ -44,6 +44,6 @@
     "@starknt/shutdown-handler-napi-win32-x64-msvc": "0.0.3"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.18.2"
+    "@napi-rs/cli": "^3.5.1"
   }
 }

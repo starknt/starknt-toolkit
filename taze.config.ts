@@ -1,8 +1,15 @@
 import { defineConfig } from 'taze'
 
 export default defineConfig({
+  mode: 'major',
+  interactive: true,
+  ignoreOtherWorkspaces: false,
+  recursive: true,
   force: true,
   write: false,
   install: false,
-  recursive: true,
+  ignorePaths: [
+    '**/node_modules/**',
+    '**/test/**',
+  ],
 })

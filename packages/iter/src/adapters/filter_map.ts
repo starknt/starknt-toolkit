@@ -1,5 +1,6 @@
-import { type Option, Some } from '@starknt/utils'
+import type { Option } from '@starknt/utils'
 import type { Iterator } from '../traits/iter'
+import { None, Some } from '@starknt/utils'
 
 function filter_map_try_fold<T, B, Acc, R extends Option<Acc> = Option<Acc>>(
   f: (t: T) => Option<B>,
@@ -21,7 +22,7 @@ function filter_map_fold<T, B, Acc>(
   })
 }
 
-export class FilterMap<Item, Output = Item, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => Option<Output> = (item: Item) => Option<Output>,
+export class FilterMap<const Item, Output = Item, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => Option<Output> = (item: Item) => Option<Output>,
 > {
   protected iter: I
   protected f: F
@@ -32,7 +33,13 @@ export class FilterMap<Item, Output = Item, I extends Iterator<Item> = Iterator<
   }
 
   next(): Option<Output> {
-    return this.iter.find_map<Output>(this.f)
+    let item: Option<Item>
+    while ((item = this.iter.next()) && item.isSome()) {
+      const mapped = this.f(item.value)
+      if (mapped.isSome())
+        return mapped
+    }
+    return None
   }
 
   try_fold<Acc, R extends Option<Acc> = Option<Acc>, Fold extends (acc: Acc, item: Output) => R = (acc: Acc, item: Output) => R>(init: Acc, fold: Fold): R {

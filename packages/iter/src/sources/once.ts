@@ -1,7 +1,12 @@
-import { type Option, Some } from '@starknt/utils'
-import { type IntoIter, into_iter } from '../option'
+import type { Option } from '@starknt/utils'
+import type { IntoIter } from '../option'
+import { Some } from '@starknt/utils'
+import { into_iter } from '../option'
 
-export class Once<Item> {
+/**
+ * An iterator that yields a single element.
+ */
+export class Once<const Item> {
   private inner!: IntoIter<Item>
 
   constructor(inner: IntoIter<Item>) {
@@ -21,6 +26,11 @@ export class Once<Item> {
   }
 }
 
+/**
+ * Creates an iterator that yields a single element.
+ * @param value The value to yield
+ * @returns Iterator that yields the value once
+ */
 export function once<T>(value: T): Once<T> {
   return new Once<T>(into_iter(Some(value)))
 }
