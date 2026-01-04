@@ -11,6 +11,10 @@ class Iter extends Iterator<number> {
     super()
   }
 
+  clone(): Iter {
+    return new Iter()
+  }
+
   next(): Option<number> {
     if (this.max > 0) {
       this.max--
@@ -26,6 +30,10 @@ class DoubleIter extends DoubleEndedIterator<number> {
 
   constructor() {
     super()
+  }
+
+  clone(): DoubleIter {
+    return new DoubleIter()
   }
 
   next(): Option<number> {

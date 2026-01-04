@@ -1,12 +1,13 @@
-import type { Option, Result } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
+import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
 
-export class Enumerate<const Item, I extends Iterator<Item> = Iterator<Item>, Output extends [number, Item] = [number, Item]> {
+export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output = [number, Item]> extends Iterator<Output> {
   protected iter: I
   private _count: number
 
   constructor(iter: I) {
+    super()
     this.iter = iter
     this._count = 0
   }
@@ -31,49 +32,5 @@ export class Enumerate<const Item, I extends Iterator<Item> = Iterator<Item>, Ou
 
   count(): number {
     return this.iter.count()
-  }
-
-  try_fold<Acc, R extends Option<Acc> = Option<Acc>, Fold extends (acc: Acc, item: Output) => R = (acc: Acc, item: Output) => R>(init: Acc, fold: Fold): R {
-    // eslint-disable-next-line ts/no-this-alias
-    const self = this
-    function enumerate<T, Acc>(
-      fold: (acc: Acc, item: [number, T]) => R,
-    ): (acc: Acc, t: T) => R {
-      return (acc: Acc, item: T) => {
-        const accum = fold(acc, [self._count, item])
-        self._count += 1
-        return accum
-      }
-    }
-
-    // @ts-expect-error allow
-    return this.iter.try_fold(init, enumerate(fold))
-  }
-
-  fold<Acc, Fold extends (acc: Acc, item: Output) => Acc = (acc: Acc, item: Output) => Acc>(init: Acc, fold: Fold): Acc {
-    // eslint-disable-next-line ts/no-this-alias
-    const self = this
-    function enumerate<T, Acc>(
-      fold: (acc: Acc, item: [number, T]) => Acc,
-    ): (acc: Acc, t: T) => Acc {
-      return (acc: Acc, item: T) => {
-        const accum = fold(acc, [self._count, item])
-        self._count += 1
-        return accum
-      }
-    }
-
-    // @ts-expect-error allow
-    return this.iter.fold(init, enumerate(fold))
-  }
-
-  advance_by(n: number): Result<undefined, number> {
-    const remaining = this.iter.advance_by(n)
-    const advance = remaining.match<number>({
-      Ok: () => n,
-      Err: rem => n - rem,
-    })
-    this._count += advance
-    return remaining
   }
 }

@@ -1,12 +1,13 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
-import { None, Some } from '@starknt/utils'
+import { None } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
 
-export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> implements Iterator<Item> {
+export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
   protected iter: I
   protected n: number
 
   constructor(iter: I, n: number) {
+    super()
     this.iter = iter
     this.n = n
   }
@@ -73,29 +74,5 @@ export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> impleme
   size_hint(): [number, Option<number>] {
     // not implemented
     return [0, None]
-  }
-
-  // @ts-expect-error allow
-  try_fold<Acc, R extends Option<Acc> = Option<Acc>, Fold extends (b: Acc, item: Item) => R = (init: Acc, item: Item) => R>(init: Acc, fold: Fold): R {
-    const n = this.n
-    this.n = 0
-    if (n > 0) {
-      // nth(n) skips n+1
-      if (this.iter.nth(n - 1).isNone())
-        return Some(init) as R
-    }
-
-    return this.iter.try_fold(init, fold)
-  }
-
-  // @ts-expect-error allow
-  fold<Acc, Fold extends (b: Acc, item: Item) => Acc = (b: Acc, item: Item) => Acc>(init: Acc, fold: Fold): Acc {
-    if (this.n > 0) {
-      // nth(n) skips n+1
-      if (this.iter.nth(this.n - 1).isNone())
-        return init
-    }
-
-    return this.iter.fold(init, fold)
   }
 }

@@ -13,6 +13,10 @@ export class Repeat<const Item> extends Iterator<Item> {
     this.value = value
   }
 
+  clone(): Repeat<Item> {
+    return new Repeat(this.value)
+  }
+
   next(): Option<Item> {
     return Some(this.value)
   }

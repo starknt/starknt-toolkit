@@ -1,17 +1,18 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
 import { None, Some } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
 
 /**
  * Iterator adapter that inserts a separator between elements.
  */
-export class Intersperse<const Item, I extends Iterator<Item> = Iterator<Item>> {
+export class Intersperse<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected separator: Item
   protected peeked: Option<Item> | null
   protected need_separator: boolean
 
   constructor(iter: I, separator: Item) {
+    super()
     this.iter = iter
     this.separator = separator
     this.peeked = null

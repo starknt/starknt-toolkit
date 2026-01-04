@@ -1,29 +1,33 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
 import { None } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
 
-export class SkipWhile<const Item, I extends Iterator<Item> = Iterator<Item>, P extends (item: Item) => boolean = (item: Item) => boolean> {
+export class SkipWhile<I extends Iterator<Item>, P extends (item: Item) => boolean, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected predicate: P
   protected flag: boolean
 
   constructor(iter: I, predicate: P) {
+    super()
     this.iter = iter
     this.predicate = predicate
-    this.flag = false
+    this.flag = true
   }
 
   next(): Option<Item> {
-    let item: Option<Item>
-    if (!this.flag) {
-      while ((item = this.iter.next()) && item.isSome()) {
-        if (!this.predicate(item.value)) {
-          this.flag = true
-          return item
-        }
+    while (this.flag) {
+      const item = this.iter.next()
+      if (item.isNone()) {
+        this.flag = false
+        return None
       }
-      return None
+
+      if (!this.predicate(item.value)) {
+        this.flag = false
+        return item
+      }
     }
+
     return this.iter.next()
   }
 }

@@ -13,6 +13,10 @@ export class FromFn<const Item> extends Iterator<Item> {
     this.f = f
   }
 
+  clone(): FromFn<Item> {
+    return new FromFn(this.f)
+  }
+
   next(): Option<Item> {
     return this.f()
   }

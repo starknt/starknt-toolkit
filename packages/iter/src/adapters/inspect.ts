@@ -1,15 +1,16 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/iter'
 
 /**
  * Iterator adapter that allows inspecting each element with a side-effect function.
  * The element itself is not modified, only observed.
  */
-export class Inspect<const Item, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => void = (item: Item) => void> {
+export class Inspect<I extends Iterator<Item>, F extends (item: Item) => void, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected f: F
 
   constructor(iter: I, f: F) {
+    super()
     this.iter = iter
     this.f = f
   }

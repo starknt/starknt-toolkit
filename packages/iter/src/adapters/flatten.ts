@@ -1,15 +1,18 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
 import { None } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
+
+export type FlattenItem<I extends Iterator<any>> = I extends Iterator<infer Item> ? Item extends Iterator<any> ? FlattenItem<Item> : Item : never
 
 /**
  * Iterator adapter that flattens nested iterators.
  */
-export class Flatten<const Item, I extends Iterator<Iterator<Item>> = Iterator<Iterator<Item>>> {
+export class Flatten<const I extends Iterator<any>, Item = FlattenItem<I>> extends Iterator<Item> {
   protected outer: I
   protected inner: Iterator<Item> | null
 
   constructor(outer: I) {
+    super()
     this.outer = outer
     this.inner = null
   }
@@ -30,7 +33,7 @@ export class Flatten<const Item, I extends Iterator<Iterator<Item>> = Iterator<I
 
       // Iterator implements IntoIterator, so we can call into_iter()
       const inner_iter = outer_item.value
-      this.inner = inner_iter.into_iter()
+      this.inner = inner_iter as Iterator<Item>
     }
   }
 }

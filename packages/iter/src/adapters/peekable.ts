@@ -1,14 +1,15 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/iter'
 
 /**
  * Iterator adapter that allows peeking at the next element without consuming it.
  */
-export class Peekable<const Item, I extends Iterator<Item> = Iterator<Item>> {
+export class Peekable<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected peeked: Option<Item> | null
 
   constructor(iter: I) {
+    super()
     this.iter = iter
     this.peeked = null
   }

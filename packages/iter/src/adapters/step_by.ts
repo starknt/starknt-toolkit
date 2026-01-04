@@ -1,15 +1,16 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/iter'
 
 /**
  * Iterator adapter that steps through elements by a given amount.
  */
-export class StepBy<const Item, I extends Iterator<Item> = Iterator<Item>> {
+export class StepBy<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected step: number
   protected first_take: boolean
 
   constructor(iter: I, step: number) {
+    super()
     if (step === 0) {
       throw new Error('step_by: step must be greater than 0')
     }

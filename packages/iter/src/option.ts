@@ -5,10 +5,16 @@ import { Iterator } from './traits/iter'
 export class Item<T> extends Iterator<T> {
   protected opt!: Option<T>
   protected t = false
+  private originalOpt: Option<T>
 
   constructor(opt: Option<T>) {
     super()
     this.opt = opt
+    this.originalOpt = opt
+  }
+
+  clone(): Item<T> {
+    return new Item(this.originalOpt)
   }
 
   private _take(): Option<T> {

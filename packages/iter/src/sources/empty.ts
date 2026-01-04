@@ -6,6 +6,10 @@ import { Iterator } from '../traits/iter'
  * An iterator that yields no elements.
  */
 export class Empty<const Item> extends Iterator<Item> {
+  clone(): Empty<Item> {
+    return new Empty()
+  }
+
   next(): Option<Item> {
     return None
   }

@@ -1,57 +1,55 @@
 import type { Option } from '@starknt/utils'
-import type { Iterator } from '../traits/iter'
 import { None, Some } from '@starknt/utils'
+import { Iterator } from '../traits/iter'
 
-export class Cycle<const Item, I extends Iterator<Item> = Iterator<Item>> {
-  protected orig: I
+/**
+ * Iterator adapter that repeats an iterator endlessly.
+ * Elements are cached on the first iteration, then reused for subsequent cycles.
+ * This implementation does not require clone() - it caches elements instead.
+ */
+export class Cycle<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
   protected iter: I
+  protected cache: Item[] | null = null
+  protected cacheIndex: number = 0
 
   constructor(iter: I) {
-    this.orig = iter.clone() as I
+    super()
     this.iter = iter
   }
 
   next(): Option<Item> {
-    return this.iter.next().match({
-      None: () => {
-        this.iter = this.orig.clone() as I
-        return this.next()
-      },
-      Some: x => Some(x),
-    })
-  }
-
-  try_fold<Acc, R extends Option<Acc> = Option<Acc>, F extends (acc: Acc, item: Item) => R = (acc: Acc, item: Item) => R>(acc: Acc, f: F): R {
-    // fully iterate the current iterator. this is necessary because
-    // `self.iter` may be empty even when `self.orig` isn't
-    let _acc = this.iter.try_fold(acc, f)
-    if (_acc.isNone())
-      return None as R
-    else
-      acc = _acc.value
-    this.iter = this.orig.clone() as I
-
-    // complete a full cycle, keeping track of whether the cycled
-    // iterator is empty or not. we need to return early in case
-    // of an empty iterator to prevent an infinite loop
-    let is_empty = true
-    _acc = this.iter.try_fold(acc, (acc, x) => {
-      is_empty = false
-      return f(acc, x)
-    })
-    if (_acc.isNone())
-      return None as R
-
-    if (is_empty)
-      return Some(acc) as R
-
-    while (true) {
-      this.iter = this.orig.clone() as I
-      _acc = this.iter.try_fold(acc, f)
-      if (_acc.isNone())
-        return None as R
-      else
-        acc = _acc.value
+    // If cache is not yet created, try to get next element from iterator
+    if (this.cache === null) {
+      const item = this.iter.next()
+      if (item.isSome()) {
+        // First element found, initialize cache and start collecting
+        this.cache = [item.value]
+        this.cacheIndex = 1
+        return item
+      }
+      // Iterator was empty from the start
+      return None
     }
+
+    // Cache exists, use it for cycling
+    if (this.cacheIndex < this.cache.length) {
+      return Some(this.cache[this.cacheIndex++])
+    }
+
+    // Cache exhausted, try to get more elements from iterator
+    const item = this.iter.next()
+    if (item.isSome()) {
+      this.cache.push(item.value)
+      this.cacheIndex++
+      return item
+    }
+
+    // Iterator exhausted, reset to start of cache for next cycle
+    if (this.cache.length === 0) {
+      return None
+    }
+
+    this.cacheIndex = 1
+    return Some(this.cache[0])
   }
 }
