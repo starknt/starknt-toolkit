@@ -96,17 +96,20 @@ export abstract class DoubleEndedIterator<const Item> extends Iterator<Item> {
     return this.try_rfold<Item, Option<Item>>(None as any, check(predicate))
   }
 
-  // rposition<P extends (item: Item) => boolean>(predicate: P): Option<number> {
-  //   const n = this.len()
-  //   function check<T>(predicate: (t: T) => boolean): (u: number, t: T) => ControlFlow<number, number> {
-  //     return (i, x) => {
-  //       const ii = i - 1
-  //       if (predicate(x))
-  //         return new ControlFlow.Break<number, number>(ii)
-  //       return new ControlFlow.Continue<number, number>(ii)
-  //     }
-  //   }
-
-  //   this.try_rfold(n, check(p))
-  // }
+  /**
+   * Searches for an element from the right and returns its index (from the start).
+   * @param predicate Predicate function
+   * @returns Some(index from start) if found, None otherwise
+   */
+  rposition<P extends (item: Item) => boolean>(predicate: P): Option<number> {
+    const len = this.len()
+    let index = len - 1
+    let item: Option<Item>
+    while ((item = this.next_back()) && item.isSome()) {
+      if (predicate(item.value))
+        return Some(index)
+      index -= 1
+    }
+    return None
+  }
 }
