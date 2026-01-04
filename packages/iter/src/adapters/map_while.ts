@@ -3,33 +3,33 @@ import type { IntoIterator } from '../interfaces/iter'
 import type { Iterator } from '../traits/iter'
 import { Err, None, Ok, Some } from '@starknt/utils'
 
-export class FlatMap<const Item, Output, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => IntoIterator<Output> = (item: Item) => IntoIterator<Output>> implements IntoIterator<Output> {
-  protected outer: I
+/**
+ * Iterator adapter that maps elements to Option values.
+ * Stops when encountering the first None.
+ */
+export class MapWhile<const Item, Output, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => Option<Output> = (item: Item) => Option<Output>> implements IntoIterator<Output> {
+  protected iter: I
   protected f: F
-  protected inner: Iterator<Output> | null
 
-  constructor(outer: I, f: F) {
-    this.outer = outer
+  constructor(iter: I, f: F) {
+    this.iter = iter
     this.f = f
-    this.inner = null
   }
 
+  /**
+   * Returns the next element.
+   * @returns Some(next element) if available, None otherwise (stops iteration)
+   */
   next(): Option<Output> {
-    while (true) {
-      if (this.inner !== null) {
-        const item = this.inner.next()
-        if (item.isSome())
-          return item
+    const item = this.iter.next()
+    if (item.isNone())
+      return None
 
-        this.inner = null
-      }
+    const mapped = this.f(item.value)
+    if (mapped.isNone())
+      return None
 
-      const outer_item = this.outer.next()
-      if (outer_item.isNone())
-        return None
-
-      this.inner = this.f(outer_item.value).into_iter()
-    }
+    return mapped
   }
 
   try_fold<B, R extends Option<B> = Option<B>, Fold extends (b: B, item: Output) => R = (b: B, item: Output) => R>(init: B, f: Fold): R {
@@ -204,7 +204,7 @@ export class FlatMap<const Item, Output, I extends Iterator<Item> = Iterator<Ite
     return [left, right]
   }
 
-  unzip<A, B>(this: FlatMap<[A, B], [A, B], any, any>): [A[], B[]] {
+  unzip<A, B>(this: MapWhile<[A, B], [A, B], any, any>): [A[], B[]] {
     const left: A[] = []
     const right: B[] = []
     let item: Option<[A, B]>

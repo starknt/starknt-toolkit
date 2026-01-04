@@ -3,33 +3,40 @@ import type { IntoIterator } from '../interfaces/iter'
 import type { Iterator } from '../traits/iter'
 import { Err, None, Ok, Some } from '@starknt/utils'
 
-export class FlatMap<const Item, Output, I extends Iterator<Item> = Iterator<Item>, F extends (item: Item) => IntoIterator<Output> = (item: Item) => IntoIterator<Output>> implements IntoIterator<Output> {
-  protected outer: I
+/**
+ * Iterator adapter that scans elements with a state.
+ * Similar to fold, but returns an iterator that yields intermediate states.
+ */
+export class Scan<const Item, State, Output = State, I extends Iterator<Item> = Iterator<Item>, F extends (state: State, item: Item) => Output = (state: State, item: Item) => Output> implements IntoIterator<Output> {
+  protected iter: I
+  protected state: State
   protected f: F
-  protected inner: Iterator<Output> | null
+  protected finished: boolean
 
-  constructor(outer: I, f: F) {
-    this.outer = outer
+  constructor(iter: I, initial_state: State, f: F) {
+    this.iter = iter
+    this.state = initial_state
     this.f = f
-    this.inner = null
+    this.finished = false
   }
 
+  /**
+   * Returns the next element.
+   * @returns Some(next element) if available, None otherwise
+   */
   next(): Option<Output> {
-    while (true) {
-      if (this.inner !== null) {
-        const item = this.inner.next()
-        if (item.isSome())
-          return item
+    if (this.finished)
+      return None
 
-        this.inner = null
-      }
-
-      const outer_item = this.outer.next()
-      if (outer_item.isNone())
-        return None
-
-      this.inner = this.f(outer_item.value).into_iter()
+    const item = this.iter.next()
+    if (item.isNone()) {
+      this.finished = true
+      return None
     }
+
+    const new_state = this.f(this.state, item.value)
+    this.state = new_state as unknown as State
+    return Some(new_state) as Option<Output>
   }
 
   try_fold<B, R extends Option<B> = Option<B>, Fold extends (b: B, item: Output) => R = (b: B, item: Output) => R>(init: B, f: Fold): R {
@@ -204,7 +211,7 @@ export class FlatMap<const Item, Output, I extends Iterator<Item> = Iterator<Ite
     return [left, right]
   }
 
-  unzip<A, B>(this: FlatMap<[A, B], [A, B], any, any>): [A[], B[]] {
+  unzip<A, B>(this: Scan<[A, B], any, [A, B], any, any>): [A[], B[]] {
     const left: A[] = []
     const right: B[] = []
     let item: Option<[A, B]>

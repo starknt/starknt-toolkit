@@ -238,6 +238,46 @@ iter.peek() // Some(2)
 iter.next() // Some(2)
 ```
 
+#### `scan<State>(initial_state: State, f: (state: State, item: Item) => State): Scan<Item, State>`
+
+状态累积迭代器，类似 `fold`，但返回迭代器，每个元素都会产生一个状态值。
+
+```typescript
+[1, 2, 3].iter().scan(0, (acc, x) => acc + x).collect() // [1, 3, 6]
+```
+
+#### `inspect<F>(f: F): Inspect<Item>`
+
+对每个元素执行副作用函数（如打印），但不改变元素。
+
+```typescript
+[1, 2, 3].iter().inspect(x => console.log(x)).collect() // [1, 2, 3] (同时打印每个元素)
+```
+
+#### `map_while<F>(f: F): MapWhile<Item, Output>`
+
+类似 `filter_map`，但在遇到第一个 `None` 时停止迭代。
+
+```typescript
+[1, 2, 3, 4].iter().map_while(x => x < 3 ? Some(x * 2) : None).collect() // [2, 4]
+```
+
+#### `intersperse(separator: Item): Intersperse<Item>`
+
+在元素之间插入固定的分隔符。
+
+```typescript
+[1, 2, 3].iter().intersperse(0).collect() // [1, 0, 2, 0, 3]
+```
+
+#### `intersperse_with<F>(f: F): IntersperseWith<Item>`
+
+在元素之间插入由函数生成的分隔符。
+
+```typescript
+[1, 2, 3].iter().intersperse_with(() => 0).collect() // [1, 0, 2, 0, 3]
+```
+
 ### 消费方法
 
 #### `collect(): Item[]`
@@ -369,6 +409,11 @@ map.iter() // Iterator<number> (值)
 | `Iterator::last` | `Iterator::last` |
 | `Iterator::partition` | `Iterator::partition` |
 | `Iterator::unzip` | `Iterator::unzip` |
+| `Iterator::scan` | `Iterator::scan` |
+| `Iterator::inspect` | `Iterator::inspect` |
+| `Iterator::map_while` | `Iterator::map_while` |
+| `Iterator::intersperse` | `Iterator::intersperse` |
+| `Iterator::intersperse_with` | `Iterator::intersperse_with` |
 | `std::iter::once` | `once` |
 | `std::iter::empty` | `empty` |
 | `std::iter::repeat` | `repeat` |

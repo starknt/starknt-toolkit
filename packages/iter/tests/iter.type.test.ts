@@ -1,5 +1,6 @@
 import type { Option } from '@starknt/utils'
 import type { Iterator } from '../src'
+import type { Chain } from '../src/adapters/chain'
 import { None, Some } from '@starknt/utils'
 import { expectTypeOf, it } from 'vitest'
 import '../src/globals'
@@ -29,7 +30,7 @@ it('filter_map: number', () => {
   const iter = [1, 2, 3, 4, 5].iter()
   const filtered = iter.filter_map(x => x > 3 ? Some(x * 2) : None)
 
-  expectTypeOf(filtered.next()).toMatchTypeOf<Option<number>>()
+  expectTypeOf(filtered.next).returns.toEqualTypeOf<Option<number>>()
 })
 
 it('filter_map: union types', () => {
@@ -59,7 +60,7 @@ it('chain', () => {
   const chained = iter1.chain(iter2)
 
   // Only test type, don't call next() to avoid runtime error
-  expectTypeOf(chained).toMatchTypeOf<Iterator<number>>()
+  expectTypeOf(chained).toMatchTypeOf<Chain<number>>()
 })
 
 it('zip', () => {
@@ -68,4 +69,39 @@ it('zip', () => {
   const zipped = iter1.zip(iter2)
 
   expectTypeOf(zipped.next()).toMatchTypeOf<Option<[number, string]>>()
+})
+
+it('scan', () => {
+  const iter = [1, 2, 3].iter()
+  const scanned = iter.scan(0, (acc, x) => acc + x)
+
+  expectTypeOf(scanned.next()).toMatchTypeOf<Option<number>>()
+})
+
+it('inspect', () => {
+  const iter = [1, 2, 3].iter()
+  const inspected = iter.inspect(x => void x)
+
+  expectTypeOf(inspected.next()).toMatchTypeOf<Option<number>>()
+})
+
+it('map_while', () => {
+  const iter = [1, 2, 3].iter()
+  const mapped = iter.map_while(x => x < 3 ? Some(x * 2) : None)
+
+  expectTypeOf(mapped.next()).toMatchTypeOf<Option<number>>()
+})
+
+it('intersperse', () => {
+  const iter = [1, 2, 3].iter()
+  const interspersed = iter.intersperse(0)
+
+  expectTypeOf(interspersed.next()).toMatchTypeOf<Option<number>>()
+})
+
+it('intersperse_with', () => {
+  const iter = [1, 2, 3].iter()
+  const interspersed = iter.intersperse_with(() => 0)
+
+  expectTypeOf(interspersed.next()).toMatchTypeOf<Option<number>>()
 })

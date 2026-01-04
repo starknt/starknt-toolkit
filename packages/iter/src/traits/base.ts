@@ -5,7 +5,7 @@ import { Err, None, Ok, Some } from '@starknt/utils'
  * Base iterator trait providing common iterator methods.
  * All iterators extend this class to get default implementations.
  */
-export abstract class BaseIterator<Item> {
+export abstract class BaseIterator<const Item> {
   /**
    * Returns the next element of the iterator.
    * @returns Some(value) if there is a next element, None otherwise

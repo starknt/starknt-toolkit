@@ -64,7 +64,7 @@ describe('iter', () => {
   it('zip', () => {
     const iter = new Iter()
 
-    expect(iter.zip<number>(new Iter()).fold<number>(0, (a, b) => a + b[0] + b[1])).toEqual(45 + 45)
+    expect(iter.zip(new Iter()).fold<number>(0, (a, b) => a + b[0] + b[1])).toEqual(45 + 45)
   })
 
   it('map', () => {
@@ -229,5 +229,63 @@ describe('iter', () => {
     expect(peekable.next()).toStrictEqual(Some(3))
     expect(peekable.peek()).toStrictEqual(None)
     expect(peekable.next()).toStrictEqual(None)
+  })
+
+  it('scan', () => {
+    const iter = [1, 2, 3].iter()
+    const scanned = iter.scan(0, (acc, x) => acc + x)
+    expect(scanned.next()).toStrictEqual(Some(1))
+    expect(scanned.next()).toStrictEqual(Some(3))
+    expect(scanned.next()).toStrictEqual(Some(6))
+    expect(scanned.next()).toStrictEqual(None)
+  })
+
+  it('inspect', () => {
+    const iter = [1, 2, 3].iter()
+    let count = 0
+    const inspected = iter.inspect(x => count += x)
+    expect(inspected.next()).toStrictEqual(Some(1))
+    expect(count).toBe(1)
+    expect(inspected.next()).toStrictEqual(Some(2))
+    expect(count).toBe(3)
+    expect(inspected.next()).toStrictEqual(Some(3))
+    expect(count).toBe(6)
+    expect(inspected.next()).toStrictEqual(None)
+  })
+
+  it('map_while', () => {
+    const iter = [1, 2, 3, 4, 5].iter()
+    const mapped = iter.map_while(x => x < 4 ? Some(x * 2) : None)
+    expect(mapped.next()).toStrictEqual(Some(2))
+    expect(mapped.next()).toStrictEqual(Some(4))
+    expect(mapped.next()).toStrictEqual(Some(6))
+    expect(mapped.next()).toStrictEqual(None)
+    // Should stop after first None, so 4 and 5 are not processed
+  })
+
+  it('intersperse', () => {
+    const iter = [1, 2, 3].iter()
+    const interspersed = iter.intersperse(0)
+    expect(interspersed.next()).toStrictEqual(Some(1))
+    expect(interspersed.next()).toStrictEqual(Some(0))
+    expect(interspersed.next()).toStrictEqual(Some(2))
+    expect(interspersed.next()).toStrictEqual(Some(0))
+    expect(interspersed.next()).toStrictEqual(Some(3))
+    expect(interspersed.next()).toStrictEqual(None)
+  })
+
+  it('intersperse_with', () => {
+    const iter = [1, 2, 3].iter()
+    let counter = 0
+    const interspersed = iter.intersperse_with(() => {
+      counter++
+      return counter * 10
+    })
+    expect(interspersed.next()).toStrictEqual(Some(1))
+    expect(interspersed.next()).toStrictEqual(Some(10))
+    expect(interspersed.next()).toStrictEqual(Some(2))
+    expect(interspersed.next()).toStrictEqual(Some(20))
+    expect(interspersed.next()).toStrictEqual(Some(3))
+    expect(interspersed.next()).toStrictEqual(None)
   })
 })

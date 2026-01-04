@@ -7,8 +7,13 @@ import { Filter } from '../adapters/filter'
 import { FilterMap } from '../adapters/filter_map'
 import { FlatMap } from '../adapters/flat_map'
 import { Flatten } from '../adapters/flatten'
+import { Inspect } from '../adapters/inspect'
+import { Intersperse } from '../adapters/intersperse'
+import { IntersperseWith } from '../adapters/intersperse_with'
 import { Map } from '../adapters/map'
+import { MapWhile } from '../adapters/map_while'
 import { Peekable } from '../adapters/peekable'
+import { Scan } from '../adapters/scan'
 import { Skip } from '../adapters/skip'
 import { SkipWhile } from '../adapters/skip_while'
 import { StepBy } from '../adapters/step_by'
@@ -17,12 +22,6 @@ import { TakeWhile } from '../adapters/take_while'
 import { Zip } from '../adapters/zip'
 import { BaseIterator } from './base'
 import { Sum } from './sum'
-
-// Helper type to extract the value type from Option<T>
-type ExtractOptionType<T> = T extends Option<infer U> ? U : never
-
-// Helper type to extract the item type from IntoIterator<T>
-type ExtractIntoIteratorType<T> = T extends IntoIterator<infer U> ? U : never
 
 export interface Iterator<Item> {
   next(): Option<Item>
@@ -54,7 +53,7 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    * @param other Other iterator to chain
    * @returns Chained iterator
    */
-  chain<U extends IntoIterator<Item>>(other: U): Chain<Iterator<Item>, Iterator<Item>, Item> {
+  chain<U extends IntoIterator<Item>>(other: U): Chain<Item> {
     return new Chain(this, other.into_iter())
   }
 
@@ -63,7 +62,7 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    * @param other Other iterator to zip with
    * @returns Iterator of pairs
    */
-  zip<ItemB, U extends IntoIterator<ItemB> = Iterator<ItemB>>(other: U): Zip<Item, ItemB> {
+  zip<U extends IntoIterator<ItemB>, ItemB = U extends IntoIterator<infer ItemB> ? ItemB : never>(other: U): Zip<Item, ItemB> {
     return new Zip<Item, ItemB>(this, other.into_iter())
   }
 
@@ -81,8 +80,8 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    * @param f Function that returns Option<B>
    * @returns Iterator of mapped values (None values are skipped)
    */
-  filter_map<F extends (item: Item) => Option<any>>(f: F): FilterMap<Item, ExtractOptionType<ReturnType<F>>> {
-    return new FilterMap<Item, ExtractOptionType<ReturnType<F>>>(this, f)
+  filter_map<Output>(f: (item: Item) => Option<Output>): FilterMap<Item, Output> {
+    return new FilterMap<Item, Output>(this, f)
   }
 
   /**
@@ -90,8 +89,8 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    * @param f Mapping function
    * @returns Mapped iterator
    */
-  map<F extends (item: Item) => any = (item: Item) => any>(f: F): Map<Item, ReturnType<F>> {
-    return new Map<Item, ReturnType<F>>(this, f)
+  map<Output>(f: (item: Item) => Output): Map<Item, Output> {
+    return new Map<Item, Output>(this, f)
   }
 
   /**
@@ -161,8 +160,8 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    * @param f Function that returns an IntoIterator
    * @returns Flattened iterator
    */
-  flat_map<F extends (item: Item) => IntoIterator<any>>(f: F): FlatMap<Item, ExtractIntoIteratorType<ReturnType<F>>> {
-    return new FlatMap<Item, ExtractIntoIteratorType<ReturnType<F>>>(this, f)
+  flat_map<Output>(f: (item: Item) => IntoIterator<Output>): FlatMap<Item, Output> {
+    return new FlatMap<Item, Output>(this, f)
   }
 
   /**
@@ -188,5 +187,54 @@ export abstract class Iterator<Item> extends BaseIterator<Item> implements Clone
    */
   peekable(): Peekable<Item> {
     return new Peekable<Item>(this)
+  }
+
+  /**
+   * Creates an iterator that scans elements with a state.
+   * Similar to fold, but returns an iterator that yields intermediate states.
+   * @param initial_state Initial state value
+   * @param f Function that takes state and item, returns new state
+   * @returns Iterator of state values
+   */
+  scan<State, Output>(initial_state: State, f: (state: State, item: Item) => Output): Scan<Item, State, Output> {
+    return new Scan<Item, State, Output>(this, initial_state, f)
+  }
+
+  /**
+   * Creates an iterator that allows inspecting each element with a side-effect function.
+   * The element itself is not modified, only observed.
+   * @param f Function to call on each element (for side effects)
+   * @returns Iterator with inspection
+   */
+  inspect<F extends (item: Item) => void = (item: Item) => void>(f: F): Inspect<Item> {
+    return new Inspect<Item>(this, f)
+  }
+
+  /**
+   * Creates an iterator that maps elements to Option values.
+   * Stops when encountering the first None.
+   * @param f Function that returns Option<Output>
+   * @returns Iterator that stops on first None
+   */
+  map_while<Output>(f: (item: Item) => Option<Output>): MapWhile<Item, Output> {
+    return new MapWhile<Item, Output>(this, f)
+  }
+
+  /**
+   * Creates an iterator that inserts a separator between elements.
+   * @param separator Separator value to insert
+   * @returns Iterator with separators inserted
+   */
+  intersperse(separator: Item): Intersperse<Item> {
+    return new Intersperse<Item>(this, separator)
+  }
+
+  /**
+   * Creates an iterator that inserts separators between elements using a function.
+   * @param f Function that generates separator values
+   * @returns Iterator with separators inserted
+   */
+  intersperse_with<F extends () => Item = () => Item>(f: F): IntersperseWith<Item> {
+    return new IntersperseWith<Item>(this, f)
   }
 }
