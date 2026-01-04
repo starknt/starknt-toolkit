@@ -1,4 +1,5 @@
 import type { Option } from '@starknt/utils'
+import { None, Some } from '@starknt/utils'
 import { Iterator } from '../traits/base'
 
 /**
@@ -29,7 +30,7 @@ export class StepBy<I extends Iterator<Item>, Item = I extends Iterator<infer It
   }
 
   clone(): StepBy<I, Item> {
-    return new StepBy(this.iter.clone(), this.step)
+    return new StepBy(this.iter.clone() as I, this.step)
   }
 
   size_hint(): [number, Option<number>] {
@@ -37,7 +38,7 @@ export class StepBy<I extends Iterator<Item>, Item = I extends Iterator<infer It
     // Divide by step, rounding up
     const stepped_lower = Math.ceil(lower / this.step)
     const stepped_upper = upper.match({
-      Some: u => Some(Math.ceil(u / this.step)),
+      Some: u => Some(Math.ceil(u / this.step)) as Option<number>,
       None: () => None,
     })
     return [stepped_lower, stepped_upper]

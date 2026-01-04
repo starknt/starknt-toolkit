@@ -56,7 +56,7 @@ export class FlatMap<I extends Iterator<any>, F extends (item: Item) => Iterator
   // }
 
   clone(): FlatMap<I, F, Item, Output> {
-    return new FlatMap(this.outer.clone(), this.f)
+    return new FlatMap(this.outer.clone() as I, this.f)
   }
 
   size_hint(): [number, Option<number>] {

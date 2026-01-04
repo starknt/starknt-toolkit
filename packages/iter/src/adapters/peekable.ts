@@ -35,7 +35,7 @@ export class Peekable<I extends Iterator<Item>, Item = I extends Iterator<infer 
   }
 
   clone(): Peekable<I, Item> {
-    return new Peekable(this.iter.clone())
+    return new Peekable(this.iter.clone() as I)
   }
 
   size_hint(): [number, Option<number>] {

@@ -2,7 +2,7 @@ import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
 import { Iterator } from '../traits/base'
 
-export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output = [number, Item]> extends Iterator<Output> {
+export class Enumerate<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never, Output = [number, Item]> extends Iterator<Output> {
   protected iter: I
   private _count: number
 
@@ -34,8 +34,8 @@ export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output =
     return this.iter.count()
   }
 
-  clone(): Enumerate<Item, I, Output> {
-    return new Enumerate(this.iter.clone())
+  clone(): Enumerate<I, Item, Output> {
+    return new Enumerate(this.iter.clone() as I)
   }
 
   size_hint(): [number, Option<number>] {

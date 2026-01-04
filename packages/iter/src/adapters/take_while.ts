@@ -32,7 +32,7 @@ export class TakeWhile<I extends Iterator<Item>, P extends (item: Item) => boole
   }
 
   clone(): TakeWhile<I, P, Item> {
-    return new TakeWhile(this.iter.clone(), this.predicate)
+    return new TakeWhile(this.iter.clone() as I, this.predicate)
   }
 
   size_hint(): [number, Option<number>] {

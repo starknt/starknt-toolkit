@@ -33,7 +33,7 @@ export class MapWhile<I extends Iterator<Item>, F extends (item: Item) => Option
   }
 
   clone(): MapWhile<I, F, Item, Output> {
-    return new MapWhile(this.iter.clone(), this.f)
+    return new MapWhile(this.iter.clone() as I, this.f)
   }
 
   size_hint(): [number, Option<number>] {

@@ -12,7 +12,7 @@ function and_then_or_clear<T, U>(opt: Option<T>, f: (t: T) => Option<U>): Option
   return x
 }
 
-export class Fuse<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
+export class Fuse<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   // NOTE: for `I: FusedIterator`, we never bother setting `None`, but
   // we still have to be prepared for that state due to variance.
   protected iter: Option<I>
@@ -77,7 +77,7 @@ export class Fuse<const Item, I extends Iterator<Item> = Iterator<Item>> extends
     return and_then_or_clear(this.iter, iter => iter.find(predicate))
   }
 
-  clone(): Fuse<Item, I> {
-    return new Fuse(this.original_iter.clone())
+  clone(): Fuse<I, Item> {
+    return new Fuse(this.original_iter.clone() as I)
   }
 }

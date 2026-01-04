@@ -64,6 +64,6 @@ export class Cycle<I extends Iterator<Item>, Item = I extends Iterator<infer Ite
   clone(): Cycle<I, Item> {
     // Clone the original iterator (Rust-like behavior)
     // The new clone will start fresh without any cached elements
-    return new Cycle(this.original_iter.clone())
+    return new Cycle(this.original_iter.clone() as I)
   }
 }

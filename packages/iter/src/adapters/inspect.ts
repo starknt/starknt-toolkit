@@ -27,7 +27,7 @@ export class Inspect<I extends Iterator<Item>, F extends (item: Item) => void, I
   }
 
   clone(): Inspect<I, F, Item> {
-    return new Inspect(this.iter.clone(), this.f)
+    return new Inspect(this.iter.clone() as I, this.f)
   }
 
   size_hint(): [number, Option<number>] {

@@ -47,7 +47,7 @@ export class Intersperse<I extends Iterator<Item>, Item = I extends Iterator<inf
   }
 
   clone(): Intersperse<I, Item> {
-    return new Intersperse(this.iter.clone(), this.separator)
+    return new Intersperse(this.iter.clone() as I, this.separator)
   }
 
   size_hint(): [number, Option<number>] {
@@ -60,7 +60,7 @@ export class Intersperse<I extends Iterator<Item>, Item = I extends Iterator<inf
         if (u === 0)
           return Some(0)
         // For u elements, we have u + (u-1) = 2u - 1 total items
-        return Some(2 * u - 1)
+        return Some(2 * u - 1) as Option<number>
       },
       None: () => None,
     })

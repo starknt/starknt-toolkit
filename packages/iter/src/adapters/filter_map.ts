@@ -23,7 +23,7 @@ export class FilterMap<I extends Iterator<Item>, F extends (item: Item) => Optio
   }
 
   clone(): FilterMap<I, F, Item, Output> {
-    return new FilterMap(this.iter.clone(), this.f)
+    return new FilterMap(this.iter.clone() as I, this.f)
   }
 
   size_hint(): [number, Option<number>] {

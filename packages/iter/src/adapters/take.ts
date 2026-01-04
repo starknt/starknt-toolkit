@@ -2,7 +2,7 @@ import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
 import { Iterator } from '../traits/base'
 
-export class Take<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
+export class Take<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected n: number
   private original_iter: I
@@ -39,8 +39,8 @@ export class Take<const Item, I extends Iterator<Item> = Iterator<Item>> extends
     }
   }
 
-  clone(): Take<Item, I> {
-    return new Take(this.original_iter.clone(), this.original_n)
+  clone(): Take<I, Item> {
+    return new Take(this.original_iter.clone() as I, this.original_n)
   }
 
   size_hint(): [number, Option<number>] {

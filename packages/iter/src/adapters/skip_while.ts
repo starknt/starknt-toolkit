@@ -32,7 +32,7 @@ export class SkipWhile<I extends Iterator<Item>, P extends (item: Item) => boole
   }
 
   clone(): SkipWhile<I, P, Item> {
-    return new SkipWhile(this.iter.clone(), this.predicate)
+    return new SkipWhile(this.iter.clone() as I, this.predicate)
   }
 
   size_hint(): [number, Option<number>] {

@@ -40,7 +40,7 @@ export class Scan<I extends Iterator<Item>, State, F extends (state: State, item
   }
 
   clone(): Scan<I, State, F, Item, Output> {
-    return new Scan(this.iter.clone(), this.state, this.f)
+    return new Scan(this.iter.clone() as I, this.state, this.f)
   }
 
   size_hint(): [number, Option<number>] {

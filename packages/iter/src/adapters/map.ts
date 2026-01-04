@@ -16,7 +16,7 @@ export class Map<I extends Iterator<Item>, F extends (item: Item) => unknown, It
   }
 
   clone(): Map<I, F, Item, Output> {
-    return new Map(this.iter.clone(), this.f)
+    return new Map(this.iter.clone() as I, this.f)
   }
 
   size_hint(): [number, Option<number>] {

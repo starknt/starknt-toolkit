@@ -68,7 +68,7 @@ export class Chain<const Item> extends Iterator<Item> {
 
     const combined_upper = upper_a.match({
       Some: u_a => upper_b.match({
-        Some: u_b => Some(u_a + u_b),
+        Some: u_b => Some(u_a + u_b) as Option<number>,
         None: () => None,
       }),
       None: () => None,

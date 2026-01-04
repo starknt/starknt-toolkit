@@ -89,8 +89,8 @@ export abstract class Iterator<const Item> extends BaseIterator<Item> {
    * Creates an iterator which gives the current iteration count as well as the next value.
    * @returns Iterator of [index, value] pairs
    */
-  enumerate(): Enumerate<Item> {
-    return new Enumerate<Item>(this)
+  enumerate(): Enumerate<Iterator<Item>, Item> {
+    return new Enumerate<Iterator<Item>, Item>(this)
   }
 
   /**
@@ -98,8 +98,8 @@ export abstract class Iterator<const Item> extends BaseIterator<Item> {
    * @param n Number of elements to take
    * @returns Iterator of first n elements
    */
-  take(n: number): Take<Item> {
-    return new Take<Item>(this, n)
+  take(n: number): Take<Iterator<Item>, Item> {
+    return new Take<Iterator<Item>, Item>(this, n)
   }
 
   /**
@@ -107,8 +107,8 @@ export abstract class Iterator<const Item> extends BaseIterator<Item> {
    * @param n Number of elements to skip
    * @returns Iterator with first n elements skipped
    */
-  skip(n: number): Skip<Item> {
-    return new Skip<Item>(this, n)
+  skip(n: number): Skip<Iterator<Item>, Item> {
+    return new Skip<Iterator<Item>, Item>(this, n)
   }
 
   /**
