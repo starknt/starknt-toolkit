@@ -1,7 +1,6 @@
 import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Filter } from '../../src/adapters/filter'
-import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('filter', () => {
@@ -79,9 +78,17 @@ describe('filter', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Filter([1, 2, 3, 4, 5, 6, 7, 8].iter(), x => x % 2 === 0),
-      [2, 4, 6, 8],
-    )
+    const iter = [1, 2, 3, 4, 5, 6, 7, 8].iter()
+    const filter = new Filter(iter, x => x % 2 === 0)
+    let cloned = filter.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(4))
+    expect(cloned.next()).toStrictEqual(Some(6))
+    expect(cloned.next()).toStrictEqual(Some(8))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = filter.clone()
+    expect(cloned.collect()).toStrictEqual([2, 4, 6, 8])
   })
 })

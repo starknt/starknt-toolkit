@@ -13,7 +13,6 @@ import { Rev } from '../../src/adapters/rev'
 import { Scan } from '../../src/adapters/scan'
 import { StepBy } from '../../src/adapters/step_by'
 import { DoubleEndedIterator } from '../../src/traits/double_ended'
-import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('cycle', () => {
@@ -64,10 +63,18 @@ describe('enumerate', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Enumerate(['a', 'b', 'c'].iter()),
-      [[0, 'a'], [1, 'b'], [2, 'c']],
-    )
+    const iter = ['a', 'b', 'c'].iter()
+    const enumerate = new Enumerate(iter)
+    let cloned = enumerate.clone()
+
+    expect(cloned.next()).toStrictEqual(Some([0, 'a']))
+    expect(cloned.next()).toStrictEqual(Some([1, 'b']))
+    expect(cloned.next()).toStrictEqual(Some([2, 'c']))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = enumerate.clone()
+
+    expect(cloned.collect()).toStrictEqual([[0, 'a'], [1, 'b'], [2, 'c']])
   })
 })
 
@@ -99,10 +106,18 @@ describe('fuse', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Fuse([1, 2, 3].iter()),
-      [1, 2, 3],
-    )
+    const iter = [1, 2, 3].iter()
+    const fuse = new Fuse(iter)
+    let cloned = fuse.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = fuse.clone()
+
+    expect(cloned.collect()).toStrictEqual([1, 2, 3])
   })
 })
 
@@ -131,10 +146,18 @@ describe('inspect', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Inspect([1, 2, 3].iter(), () => {}),
-      [1, 2, 3],
-    )
+    const iter = [1, 2, 3].iter()
+    const inspect = new Inspect(iter, () => {})
+    let cloned = inspect.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = inspect.clone()
+
+    expect(cloned.collect()).toStrictEqual([1, 2, 3])
   })
 })
 
@@ -167,10 +190,18 @@ describe('intersperse', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Intersperse([1, 2, 3].iter(), 0),
-      [1, 0, 2, 0, 3],
-    )
+    const iter = [1, 2, 3].iter()
+    const intersperse = new Intersperse(iter, 0)
+    let cloned = intersperse.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(0))
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(0))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = intersperse.clone()
   })
 })
 
@@ -197,10 +228,18 @@ describe('intersperseWith', () => {
 
   it('should support clone method', () => {
     // Use a function that returns a constant value for consistent testing
-    testClone(
-      () => new IntersperseWith([1, 2, 3].iter(), () => 0),
-      [1, 0, 2, 0, 3],
-    )
+    const iter = [1, 2, 3].iter()
+    const intersperse = new IntersperseWith(iter, () => 0)
+    let cloned = intersperse.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(0))
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(0))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = intersperse.clone()
   })
 })
 
@@ -230,10 +269,18 @@ describe('mapWhile', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new MapWhile([1, 2, 3, 4, 5].iter(), x => x < 4 ? Some(x * 2) : None),
-      [2, 4, 6],
-    )
+    const iter = [1, 2, 3, 4, 5].iter()
+    const mapWhile = new MapWhile(iter, x => x < 4 ? Some(x * 2) : None)
+    let cloned = mapWhile.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(4))
+    expect(cloned.next()).toStrictEqual(Some(6))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = mapWhile.clone()
+
+    expect(cloned.collect()).toStrictEqual([2, 4, 6])
   })
 })
 
@@ -262,10 +309,18 @@ describe('peekable', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Peekable([1, 2, 3].iter()),
-      [1, 2, 3],
-    )
+    const iter = [1, 2, 3].iter()
+    const peekable = new Peekable(iter)
+    let cloned = peekable.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = peekable.clone()
+
+    expect(cloned.collect()).toStrictEqual([1, 2, 3])
   })
 })
 
@@ -325,10 +380,18 @@ describe('scan', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Scan([1, 2, 3].iter(), 0, (acc, x) => acc + x),
-      [1, 3, 6],
-    )
+    const iter = [1, 2, 3].iter()
+    const scan = new Scan(iter, 0, (acc, x) => acc + x)
+    let cloned = scan.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(Some(6))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = scan.clone()
+
+    expect(cloned.collect()).toStrictEqual([1, 3, 6])
   })
 })
 
@@ -368,9 +431,19 @@ describe('stepBy', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new StepBy([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].iter(), 2),
-      [1, 3, 5, 7, 9],
-    )
+    const iter = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].iter()
+    const stepBy = new StepBy(iter, 2)
+    let cloned = stepBy.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(1))
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(Some(5))
+    expect(cloned.next()).toStrictEqual(Some(7))
+    expect(cloned.next()).toStrictEqual(Some(9))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = stepBy.clone()
+
+    expect(cloned.collect()).toStrictEqual([1, 3, 5, 7, 9])
   })
 })

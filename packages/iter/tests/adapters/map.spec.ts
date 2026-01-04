@@ -1,7 +1,6 @@
 import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Map } from '../../src/adapters/map'
-import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('map', () => {
@@ -63,9 +62,18 @@ describe('map', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Map([1, 2, 3, 4, 5].iter(), x => x * 2),
-      [2, 4, 6, 8, 10],
-    )
+    const iter = [1, 2, 3, 4, 5].iter()
+    const mapped = new Map(iter, x => x * 2)
+    let cloned = mapped.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(2))
+    expect(cloned.next()).toStrictEqual(Some(4))
+    expect(cloned.next()).toStrictEqual(Some(6))
+    expect(cloned.next()).toStrictEqual(Some(8))
+    expect(cloned.next()).toStrictEqual(Some(10))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = mapped.clone()
+    expect(cloned.collect()).toStrictEqual([2, 4, 6, 8, 10])
   })
 })

@@ -2,7 +2,6 @@ import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Skip } from '../../src/adapters/skip'
 import { Take } from '../../src/adapters/take'
-import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('take', () => {
@@ -105,9 +104,16 @@ describe('skip', () => {
   })
 
   it('should support clone method', () => {
-    testClone(
-      () => new Skip([1, 2, 3, 4, 5].iter(), 2),
-      [3, 4, 5],
-    )
+    const iter = [1, 2, 3, 4, 5].iter()
+    const skip = new Skip(iter, 2)
+    let cloned = skip.clone()
+
+    expect(cloned.next()).toStrictEqual(Some(3))
+    expect(cloned.next()).toStrictEqual(Some(4))
+    expect(cloned.next()).toStrictEqual(Some(5))
+    expect(cloned.next()).toStrictEqual(None)
+
+    cloned = skip.clone()
+    expect(cloned.collect()).toStrictEqual([3, 4, 5])
   })
 })
