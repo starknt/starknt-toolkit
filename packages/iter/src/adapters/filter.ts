@@ -20,4 +20,8 @@ export class Filter<I extends Iterator<Item>, P extends (item: Item) => boolean,
     }
     return None
   }
+
+  clone(): Filter<I, P, Item> {
+    return new Filter(this.iter.clone(), this.predicate)
+  }
 }

@@ -14,4 +14,8 @@ export class Map<I extends Iterator<Item>, F extends (item: Item) => unknown, It
   next(): Option<Output> {
     return this.iter.next().map(this.f as (item: Item) => Output)
   }
+
+  clone(): Map<I, F, Item, Output> {
+    return new Map(this.iter.clone(), this.f)
+  }
 }

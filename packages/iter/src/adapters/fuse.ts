@@ -16,10 +16,12 @@ export class Fuse<const Item, I extends Iterator<Item> = Iterator<Item>> extends
   // NOTE: for `I: FusedIterator`, we never bother setting `None`, but
   // we still have to be prepared for that state due to variance.
   protected iter: Option<I>
+  private original_iter: I
 
   constructor(iter: I) {
     super()
     this.iter = Some(iter)
+    this.original_iter = iter
   }
 
   into_inner(): Option<Iterator<Item>> {
@@ -73,5 +75,9 @@ export class Fuse<const Item, I extends Iterator<Item> = Iterator<Item>> extends
 
   find<P extends (item: Item) => boolean>(predicate: P): Option<Item> {
     return and_then_or_clear(this.iter, iter => iter.find(predicate))
+  }
+
+  clone(): Fuse<Item, I> {
+    return new Fuse(this.original_iter.clone())
   }
 }

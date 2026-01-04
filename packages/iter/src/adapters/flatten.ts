@@ -36,4 +36,8 @@ export class Flatten<const I extends Iterator<any>, Item = FlattenItem<I>> exten
       this.inner = inner_iter as Iterator<Item>
     }
   }
+
+  clone(): Flatten<I, Item> {
+    return new Flatten(this.outer.clone())
+  }
 }

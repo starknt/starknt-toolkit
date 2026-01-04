@@ -15,11 +15,15 @@ function and_then_or_clear<T, U>(opt: Option<T>, f: (item: T) => Option<U>): Opt
 export class Chain<const Item> extends Iterator<Item> {
   protected a: Option<Iterator<Item>>
   protected b: Option<Iterator<Item>>
+  private readonly original_a: Iterator<Item>
+  private readonly original_b: Iterator<Item>
 
   constructor(a: Iterator<Item>, b: Iterator<Item>) {
     super()
     this.a = Some(a)
     this.b = Some(b)
+    this.original_a = a
+    this.original_b = b
   }
 
   next(): Option<Item> {
@@ -49,5 +53,10 @@ export class Chain<const Item> extends Iterator<Item> {
     const a_last = this.a.andThen(a => a.last())
     const b_last = this.b.andThen(b => b.last())
     return b_last.or(a_last)
+  }
+
+  clone(): Chain<Item> {
+    // Clone the original iterators (Rust-like behavior)
+    return new Chain(this.original_a.clone(), this.original_b.clone())
   }
 }

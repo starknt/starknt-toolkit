@@ -27,4 +27,8 @@ export class StepBy<I extends Iterator<Item>, Item = I extends Iterator<infer It
 
     return this.iter.nth(this.step - 1)
   }
+
+  clone(): StepBy<I, Item> {
+    return new StepBy(this.iter.clone(), this.step)
+  }
 }

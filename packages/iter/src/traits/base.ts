@@ -30,6 +30,51 @@ export abstract class Iterator<const Item> implements IntoIterator<Item> {
   }
 
   /**
+   * Creates a clone of this iterator.
+   *
+   * **Important**: This is a fallback implementation that collects all remaining elements.
+   * If the iterator has been partially consumed, only the remaining elements will be collected.
+   * For best results, call clone() before consuming any elements, or override this method
+   * in subclasses to provide a more efficient implementation.
+   *
+   * @returns A new iterator with the remaining elements (or all elements if not yet consumed)
+   */
+  clone(): Iterator<Item> {
+    // Collect all remaining elements from the iterator
+    const items: Item[] = []
+    let item: Option<Item>
+    while ((item = this.next()) && item.isSome()) {
+      items.push(item.value)
+    }
+
+    // Create a new iterator from the collected items
+    let idx = 0
+    const itemsCopy = items
+    const instance = new (class extends Iterator<Item> {
+      next(): Option<Item> {
+        if (idx < itemsCopy.length)
+          return Some(itemsCopy[idx++])
+        return None
+      }
+
+      clone(): Iterator<Item> {
+        // Create a new iterator from the collected items
+        const clonedItems = itemsCopy.slice()
+        let clonedIdx = 0
+        return new (class extends Iterator<Item> {
+          next(): Option<Item> {
+            if (clonedIdx < clonedItems.length)
+              return Some(clonedItems[clonedIdx++])
+            return None
+          }
+        })()
+      }
+    })()
+
+    return instance
+  }
+
+  /**
    * Folds every element into an accumulator by applying an operation.
    * @param init Initial accumulator value
    * @param f Operation function (accumulator, item) => new accumulator

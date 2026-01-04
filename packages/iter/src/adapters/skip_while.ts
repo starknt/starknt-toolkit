@@ -30,4 +30,8 @@ export class SkipWhile<I extends Iterator<Item>, P extends (item: Item) => boole
 
     return this.iter.next()
   }
+
+  clone(): SkipWhile<I, P, Item> {
+    return new SkipWhile(this.iter.clone(), this.predicate)
+  }
 }

@@ -71,4 +71,11 @@ describe('chain', () => {
 
     expect(chain.collect()).toStrictEqual([1, 2, 3, 4])
   })
+
+  it('should support clone method', () => {
+    const chain = new Chain([1, 2, 3].iter(), [4, 5].iter())
+    expect(chain.collect()).toStrictEqual([1, 2, 3, 4, 5])
+    const cloned = chain.clone()
+    expect(cloned.collect()).toStrictEqual([1, 2, 3, 4, 5])
+  })
 })

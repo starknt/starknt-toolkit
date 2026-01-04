@@ -54,4 +54,8 @@ export class FlatMap<I extends Iterator<any>, F extends (item: Item) => Iterator
 
   //   return acc
   // }
+
+  clone(): FlatMap<I, F, Item, Output> {
+    return new FlatMap(this.outer.clone(), this.f)
+  }
 }

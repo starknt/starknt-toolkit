@@ -33,4 +33,8 @@ export class Peekable<I extends Iterator<Item>, Item = I extends Iterator<infer 
     }
     return this.iter.next()
   }
+
+  clone(): Peekable<I, Item> {
+    return new Peekable(this.iter.clone())
+  }
 }

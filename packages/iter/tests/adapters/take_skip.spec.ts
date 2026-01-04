@@ -2,6 +2,7 @@ import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Skip } from '../../src/adapters/skip'
 import { Take } from '../../src/adapters/take'
+import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('take', () => {
@@ -101,5 +102,12 @@ describe('skip', () => {
     const skip = new Skip(iter, 2)
 
     expect(skip.count()).toBe(3)
+  })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Skip([1, 2, 3, 4, 5].iter(), 2),
+      [3, 4, 5],
+    )
   })
 })

@@ -1,6 +1,7 @@
 import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Zip } from '../../src/adapters/zip'
+import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('zip', () => {
@@ -65,5 +66,12 @@ describe('zip', () => {
     const zip = new Zip(iter1, iter2)
 
     expect(zip.count()).toBe(3)
+  })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Zip([1, 2, 3].iter(), ['a', 'b', 'c'].iter()),
+      [[1, 'a'], [2, 'b'], [3, 'c']],
+    )
   })
 })

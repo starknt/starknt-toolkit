@@ -42,4 +42,8 @@ export class IntersperseWith<I extends Iterator<Item>, F extends () => Item, Ite
 
     return item
   }
+
+  clone(): IntersperseWith<I, F, Item> {
+    return new IntersperseWith(this.iter.clone(), this.f)
+  }
 }

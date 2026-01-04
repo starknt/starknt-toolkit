@@ -29,14 +29,14 @@ Array.prototype.iter = function () {
       super()
     }
 
-    clone(): Iterator<any> {
-      return new IteratorClass()
-    }
-
     next(): Option<any> {
       if (this.idx < this.length)
         return Some(self[this.idx++])
       return None
+    }
+
+    clone(): Iterator<any> {
+      return new IteratorClass()
     }
   }
   return new IteratorClass()
@@ -48,7 +48,7 @@ Set.prototype.iter = function () {
   const self = this
 
   const IteratorClass = class extends Iterator<any> {
-    private values = self.values()
+    private values: IterableIterator<any>
 
     constructor() {
       super()
@@ -75,7 +75,7 @@ Map.prototype.iter = function () {
   const self = this
 
   const IteratorClass = class extends Iterator<any> {
-    private values = self.values()
+    private values: IterableIterator<any>
 
     constructor() {
       super()

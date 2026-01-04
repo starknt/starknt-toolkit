@@ -21,4 +21,8 @@ export class FilterMap<I extends Iterator<Item>, F extends (item: Item) => Optio
     }
     return None
   }
+
+  clone(): FilterMap<I, F, Item, Output> {
+    return new FilterMap(this.iter.clone(), this.f)
+  }
 }

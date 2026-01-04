@@ -115,8 +115,8 @@ export abstract class Iterator<const Item> extends BaseIterator<Item> {
    * Repeats an iterator endlessly.
    * @returns Infinite iterator
    */
-  cycle(): Cycle<Item> {
-    return new Cycle<Item>(this)
+  cycle(): Cycle<Iterator<Item>, Item> {
+    return new Cycle<Iterator<Item>, Item>(this)
   }
 
   /**

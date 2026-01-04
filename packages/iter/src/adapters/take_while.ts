@@ -30,4 +30,8 @@ export class TakeWhile<I extends Iterator<Item>, P extends (item: Item) => boole
     this.flag = false
     return None
   }
+
+  clone(): TakeWhile<I, P, Item> {
+    return new TakeWhile(this.iter.clone(), this.predicate)
+  }
 }

@@ -25,4 +25,8 @@ export class Inspect<I extends Iterator<Item>, F extends (item: Item) => void, I
       this.f(item.value)
     return item
   }
+
+  clone(): Inspect<I, F, Item> {
+    return new Inspect(this.iter.clone(), this.f)
+  }
 }

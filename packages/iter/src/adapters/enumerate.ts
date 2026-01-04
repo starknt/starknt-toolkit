@@ -33,4 +33,8 @@ export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output =
   count(): number {
     return this.iter.count()
   }
+
+  clone(): Enumerate<Item, I, Output> {
+    return new Enumerate(this.iter.clone())
+  }
 }

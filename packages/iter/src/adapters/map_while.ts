@@ -31,4 +31,8 @@ export class MapWhile<I extends Iterator<Item>, F extends (item: Item) => Option
 
     return mapped
   }
+
+  clone(): MapWhile<I, F, Item, Output> {
+    return new MapWhile(this.iter.clone(), this.f)
+  }
 }

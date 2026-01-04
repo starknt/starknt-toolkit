@@ -2,6 +2,7 @@ import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { FilterMap } from '../../src/adapters/filter_map'
+import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('filterMap', () => {
@@ -53,5 +54,12 @@ describe('filterMap', () => {
     const filterMap = new FilterMap(iter, x => (x % 2 === 0 ? Some(x * 2) : None) as Option<number>)
 
     expect(filterMap.find_map(x => x > 6 ? Some(x) : None)).toStrictEqual(Some(8))
+  })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new FilterMap([1, 2, 3, 4, 5].iter(), x => (x % 2 === 0 ? Some(x * 2) : None) as Option<number>),
+      [4, 8],
+    )
   })
 })

@@ -7,7 +7,7 @@ import { Iterator } from '../traits/base'
  * Elements are cached on the first iteration, then reused for subsequent cycles.
  * This implementation does not require clone() - it caches elements instead.
  */
-export class Cycle<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
+export class Cycle<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected cache: Item[] | null = null
   protected cacheIndex: number = 0

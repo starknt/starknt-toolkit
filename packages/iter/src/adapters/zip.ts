@@ -6,11 +6,15 @@ export class Zip<const ItemA, const ItemB> extends Iterator<[ItemA, ItemB]> {
   protected a: Iterator<ItemA>
   protected b: Iterator<ItemB>
   protected index: number
+  private original_a: Iterator<ItemA>
+  private original_b: Iterator<ItemB>
 
   constructor(a: Iterator<ItemA>, b: Iterator<ItemB>) {
     super()
     this.a = a
     this.b = b
+    this.original_a = a
+    this.original_b = b
     this.index = 0
   }
 
@@ -33,5 +37,10 @@ export class Zip<const ItemA, const ItemB> extends Iterator<[ItemA, ItemB]> {
       n -= 1
     }
     return None
+  }
+
+  clone(): Zip<ItemA, ItemB> {
+    // Clone the original iterators (Rust-like behavior)
+    return new Zip(this.original_a.clone(), this.original_b.clone())
   }
 }

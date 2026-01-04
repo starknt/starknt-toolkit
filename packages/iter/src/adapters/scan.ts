@@ -38,4 +38,8 @@ export class Scan<I extends Iterator<Item>, State, F extends (state: State, item
     this.state = new_state as unknown as State
     return Some(new_state) as Option<Output>
   }
+
+  clone(): Scan<I, State, F, Item, Output> {
+    return new Scan(this.iter.clone(), this.state, this.f)
+  }
 }

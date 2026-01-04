@@ -1,3 +1,4 @@
+import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
 import { describe, expect, it } from 'vitest'
 import { Cycle } from '../../src/adapters/cycle'
@@ -12,6 +13,7 @@ import { Rev } from '../../src/adapters/rev'
 import { Scan } from '../../src/adapters/scan'
 import { StepBy } from '../../src/adapters/step_by'
 import { DoubleEndedIterator } from '../../src/traits/double_ended'
+import { testClone } from './clone.test-helper'
 import '../../src/globals'
 
 describe('cycle', () => {
@@ -60,6 +62,13 @@ describe('enumerate', () => {
 
     expect(enumerate.count()).toBe(2)
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Enumerate(['a', 'b', 'c'].iter()),
+      [[0, 'a'], [1, 'b'], [2, 'c']],
+    )
+  })
 })
 
 describe('fuse', () => {
@@ -88,6 +97,13 @@ describe('fuse', () => {
 
     expect(fuse.count()).toBe(3)
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Fuse([1, 2, 3].iter()),
+      [1, 2, 3],
+    )
+  })
 })
 
 describe('inspect', () => {
@@ -112,6 +128,13 @@ describe('inspect', () => {
 
     expect(inspect.next()).toStrictEqual(None)
     expect(inspected).toStrictEqual([])
+  })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Inspect([1, 2, 3].iter(), () => {}),
+      [1, 2, 3],
+    )
   })
 })
 
@@ -142,6 +165,13 @@ describe('intersperse', () => {
 
     expect(intersperse.next()).toStrictEqual(None)
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Intersperse([1, 2, 3].iter(), 0),
+      [1, 0, 2, 0, 3],
+    )
+  })
 })
 
 describe('intersperseWith', () => {
@@ -159,10 +189,18 @@ describe('intersperseWith', () => {
   })
 
   it('should work with empty iterator', () => {
-    const iter = [].iter()
+    const iter = ([] as number[]).iter()
     const intersperse = new IntersperseWith(iter, () => 0)
 
     expect(intersperse.next()).toStrictEqual(None)
+  })
+
+  it('should support clone method', () => {
+    // Use a function that returns a constant value for consistent testing
+    testClone(
+      () => new IntersperseWith([1, 2, 3].iter(), () => 0),
+      [1, 0, 2, 0, 3],
+    )
   })
 })
 
@@ -190,6 +228,13 @@ describe('mapWhile', () => {
 
     expect(mapWhile.collect()).toStrictEqual([2, 4, 6])
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new MapWhile([1, 2, 3, 4, 5].iter(), x => x < 4 ? Some(x * 2) : None),
+      [2, 4, 6],
+    )
+  })
 })
 
 describe('peekable', () => {
@@ -215,6 +260,13 @@ describe('peekable', () => {
     expect(peekable.peek()).toStrictEqual(None)
     expect(peekable.next()).toStrictEqual(None)
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Peekable([1, 2, 3].iter()),
+      [1, 2, 3],
+    )
+  })
 })
 
 describe('rev', () => {
@@ -223,13 +275,13 @@ describe('rev', () => {
       private arr = [1, 2, 3]
       private idx = 0
 
-      next() {
+      next(): Option<number> {
         if (this.idx >= this.arr.length)
           return None
         return Some(this.arr[this.idx++])
       }
 
-      next_back() {
+      next_back(): Option<number> {
         if (this.idx >= this.arr.length)
           return None
         this.idx++
@@ -271,6 +323,13 @@ describe('scan', () => {
 
     expect(scan.collect()).toStrictEqual([1, 3, 6])
   })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new Scan([1, 2, 3].iter(), 0, (acc, x) => acc + x),
+      [1, 3, 6],
+    )
+  })
 })
 
 describe('stepBy', () => {
@@ -306,5 +365,12 @@ describe('stepBy', () => {
     const stepBy = new StepBy(iter, 2)
 
     expect(stepBy.collect()).toStrictEqual([1, 3, 5])
+  })
+
+  it('should support clone method', () => {
+    testClone(
+      () => new StepBy([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].iter(), 2),
+      [1, 3, 5, 7, 9],
+    )
   })
 })

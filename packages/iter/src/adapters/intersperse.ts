@@ -45,4 +45,8 @@ export class Intersperse<I extends Iterator<Item>, Item = I extends Iterator<inf
 
     return item
   }
+
+  clone(): Intersperse<I, Item> {
+    return new Intersperse(this.iter.clone(), this.separator)
+  }
 }
