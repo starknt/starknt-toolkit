@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 /**
  * Iterator adapter that maps elements to Option values.

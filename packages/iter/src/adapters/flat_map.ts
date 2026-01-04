@@ -1,7 +1,7 @@
 import type { Option } from '@starknt/utils'
 import type { FlattenItem } from './flatten'
 import { None } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export class FlatMap<I extends Iterator<any>, F extends (item: Item) => Iterator<any>, Item = FlattenItem<I>, Output = F extends (item: Item) => Iterator<infer Output> ? Output : never> extends Iterator<Output> {
   protected outer: I

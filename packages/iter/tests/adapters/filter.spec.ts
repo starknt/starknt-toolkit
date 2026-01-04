@@ -68,11 +68,11 @@ describe('filter', () => {
   })
 
   it('should support any and all methods', () => {
-    const iter1 = [2, 4, 6, 8].iter()
+    const iter1 = [1, 2, 3, 4, 5, 6, 7, 8].iter()
     const filter1 = new Filter(iter1, x => x % 2 === 0)
     expect(filter1.any(x => x > 5)).toBe(true)
 
-    const iter2 = [2, 4, 6, 8].iter()
+    const iter2 = [1, 2, 3, 4, 5, 6, 7, 8].iter()
     const filter2 = new Filter(iter2, x => x % 2 === 0)
     expect(filter2.all(x => x > 10)).toBe(false)
   })

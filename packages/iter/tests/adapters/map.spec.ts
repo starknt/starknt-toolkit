@@ -34,12 +34,17 @@ describe('map', () => {
   })
 
   it('should support all standard iterator methods', () => {
-    const iter = [1, 2, 3].iter()
-    const mapped = new Map(iter, x => x * 2)
+    const iter1 = [1, 2, 3].iter()
+    const mapped1 = new Map(iter1, x => x * 2)
+    expect(mapped1.count()).toBe(3)
 
-    expect(mapped.count()).toBe(3)
-    expect(mapped.collect()).toStrictEqual([2, 4, 6])
-    expect(mapped.last()).toStrictEqual(Some(6))
+    const iter2 = [1, 2, 3].iter()
+    const mapped2 = new Map(iter2, x => x * 2)
+    expect(mapped2.collect()).toStrictEqual([2, 4, 6])
+
+    const iter3 = [1, 2, 3].iter()
+    const mapped3 = new Map(iter3, x => x * 2)
+    expect(mapped3.last()).toStrictEqual(Some(6))
   })
 
   it('should support find method', () => {
@@ -53,6 +58,6 @@ describe('map', () => {
     const iter = [1, 2, 3, 4].iter()
     const mapped = new Map(iter, x => x * 2)
 
-    expect(mapped.reduce((a, b) => a + b)).toStrictEqual(Some(20)) // 2 + 4 + 6 + 8
+    expect(mapped.reduce((a, b) => a + b).unwrap()).toStrictEqual(20) // 2 + 4 + 6 + 8
   })
 })

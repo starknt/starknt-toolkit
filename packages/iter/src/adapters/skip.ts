@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
   protected iter: I

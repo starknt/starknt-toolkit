@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 function and_then_or_clear<T, U>(opt: Option<T>, f: (t: T) => Option<U>): Option<U> {
   if (opt.isNone())

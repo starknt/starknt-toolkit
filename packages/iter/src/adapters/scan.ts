@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 /**
  * Iterator adapter that scans elements with a state.

@@ -39,11 +39,13 @@ describe('filterMap', () => {
   })
 
   it('should support all standard iterator methods', () => {
-    const iter = [1, 2, 3, 4, 5].iter()
-    const filterMap = new FilterMap(iter, x => x % 2 === 0 ? Some(x * 2) : None)
+    const iter1 = [1, 2, 3, 4, 5].iter()
+    const filterMap1 = new FilterMap(iter1, x => x % 2 === 0 ? Some(x * 2) : None)
+    expect(filterMap1.count()).toBe(2)
 
-    expect(filterMap.count()).toBe(2)
-    expect(filterMap.collect()).toStrictEqual([4, 8])
+    const iter2 = [1, 2, 3, 4, 5].iter()
+    const filterMap2 = new FilterMap(iter2, x => x % 2 === 0 ? Some(x * 2) : None)
+    expect(filterMap2.collect()).toStrictEqual([4, 8])
   })
 
   it('should support find_map method', () => {

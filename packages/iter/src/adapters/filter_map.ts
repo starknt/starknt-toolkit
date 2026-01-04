@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export class FilterMap<I extends Iterator<Item>, F extends (item: Item) => Option<unknown>, Item = I extends Iterator<infer Item> ? Item : never, Output = F extends (item: Item) => Option<infer Output> ? Output : never> extends Iterator<Output> {
   protected iter: I

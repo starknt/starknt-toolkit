@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export type FlattenItem<I extends Iterator<any>> = I extends Iterator<infer Item> ? Item extends Iterator<any> ? FlattenItem<Item> : Item : never
 

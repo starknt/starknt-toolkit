@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export class Zip<const ItemA, const ItemB> extends Iterator<[ItemA, ItemB]> {
   protected a: Iterator<ItemA>

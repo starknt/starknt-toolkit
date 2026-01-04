@@ -1,5 +1,5 @@
 import type { Option } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 /**
  * Iterator adapter that allows peeking at the next element without consuming it.

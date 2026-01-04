@@ -1,6 +1,6 @@
 import type { Option } from '@starknt/utils'
 import { None, Some } from '@starknt/utils'
-import { Iterator } from '../traits/iter'
+import { Iterator } from '../traits/base'
 
 export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output = [number, Item]> extends Iterator<Output> {
   protected iter: I
