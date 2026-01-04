@@ -34,4 +34,11 @@ export class SkipWhile<I extends Iterator<Item>, P extends (item: Item) => boole
   clone(): SkipWhile<I, P, Item> {
     return new SkipWhile(this.iter.clone(), this.predicate)
   }
+
+  size_hint(): [number, Option<number>] {
+    // SkipWhile may skip some elements, so lower bound is 0
+    // Upper bound is the same as the underlying iterator
+    const [_, upper] = this.iter.size_hint()
+    return [0, upper]
+  }
 }

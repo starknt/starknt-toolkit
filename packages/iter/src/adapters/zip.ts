@@ -43,4 +43,22 @@ export class Zip<const ItemA, const ItemB> extends Iterator<[ItemA, ItemB]> {
     // Clone the original iterators (Rust-like behavior)
     return new Zip(this.original_a.clone(), this.original_b.clone())
   }
+
+  size_hint(): [number, Option<number>] {
+    const [lower_a, upper_a] = this.original_a.size_hint()
+    const [lower_b, upper_b] = this.original_b.size_hint()
+
+    // Zip stops at the shorter iterator
+    const combined_lower = Math.min(lower_a, lower_b)
+
+    const combined_upper = upper_a.match({
+      Some: u_a => upper_b.match({
+        Some: u_b => Some(Math.min(u_a, u_b)),
+        None: () => Some(u_a),
+      }),
+      None: () => upper_b,
+    })
+
+    return [combined_lower, combined_upper]
+  }
 }

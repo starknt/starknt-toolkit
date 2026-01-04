@@ -5,16 +5,17 @@ import { Iterator } from '../traits/base'
 /**
  * Iterator adapter that repeats an iterator endlessly.
  * Elements are cached on the first iteration, then reused for subsequent cycles.
- * This implementation does not require clone() - it caches elements instead.
  */
 export class Cycle<I extends Iterator<Item>, Item = I extends Iterator<infer Item> ? Item : never> extends Iterator<Item> {
   protected iter: I
   protected cache: Item[] | null = null
   protected cacheIndex: number = 0
+  private readonly original_iter: I
 
   constructor(iter: I) {
     super()
     this.iter = iter
+    this.original_iter = iter
   }
 
   next(): Option<Item> {
@@ -51,5 +52,18 @@ export class Cycle<I extends Iterator<Item>, Item = I extends Iterator<infer Ite
 
     this.cacheIndex = 1
     return Some(this.cache[0])
+  }
+
+  size_hint(): [number, Option<number>] {
+    const [lower, _] = this.iter.size_hint()
+    // Cycle is infinite, so upper bound is None
+    // Lower bound is the same as underlying iterator (if it's non-empty)
+    return [lower, None]
+  }
+
+  clone(): Cycle<I, Item> {
+    // Clone the original iterator (Rust-like behavior)
+    // The new clone will start fresh without any cached elements
+    return new Cycle(this.original_iter.clone())
   }
 }

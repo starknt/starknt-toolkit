@@ -24,4 +24,11 @@ export class Filter<I extends Iterator<Item>, P extends (item: Item) => boolean,
   clone(): Filter<I, P, Item> {
     return new Filter(this.iter.clone(), this.predicate)
   }
+
+  size_hint(): [number, Option<number>] {
+    // Filter may remove elements, so lower bound is 0
+    // Upper bound is the same as the underlying iterator
+    const [_, upper] = this.iter.size_hint()
+    return [0, upper]
+  }
 }

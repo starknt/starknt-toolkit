@@ -25,4 +25,11 @@ export class FilterMap<I extends Iterator<Item>, F extends (item: Item) => Optio
   clone(): FilterMap<I, F, Item, Output> {
     return new FilterMap(this.iter.clone(), this.f)
   }
+
+  size_hint(): [number, Option<number>] {
+    // FilterMap may remove elements, so lower bound is 0
+    // Upper bound is the same as the underlying iterator
+    const [_, upper] = this.iter.size_hint()
+    return [0, upper]
+  }
 }

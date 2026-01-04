@@ -40,4 +40,9 @@ export class Flatten<const I extends Iterator<any>, Item = FlattenItem<I>> exten
   clone(): Flatten<I, Item> {
     return new Flatten(this.outer.clone())
   }
+
+  size_hint(): [number, Option<number>] {
+    // Flatten cannot accurately predict the size without iterating
+    return [0, None]
+  }
 }

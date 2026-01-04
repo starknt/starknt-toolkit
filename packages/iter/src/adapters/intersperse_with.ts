@@ -46,4 +46,21 @@ export class IntersperseWith<I extends Iterator<Item>, F extends () => Item, Ite
   clone(): IntersperseWith<I, F, Item> {
     return new IntersperseWith(this.iter.clone(), this.f)
   }
+
+  size_hint(): [number, Option<number>] {
+    const [lower, upper] = this.iter.size_hint()
+    // IntersperseWith adds n-1 separators for n elements
+    // If lower is 0, result is 0. Otherwise, lower * 2 - 1
+    const interspersed_lower = lower === 0 ? 0 : Math.max(0, lower * 2 - 1)
+    const interspersed_upper = upper.match({
+      Some: (u) => {
+        if (u === 0)
+          return Some(0)
+        // For u elements, we have u + (u-1) = 2u - 1 total items
+        return Some(2 * u - 1)
+      },
+      None: () => None,
+    })
+    return [interspersed_lower, interspersed_upper]
+  }
 }

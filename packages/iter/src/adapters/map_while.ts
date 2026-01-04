@@ -35,4 +35,11 @@ export class MapWhile<I extends Iterator<Item>, F extends (item: Item) => Option
   clone(): MapWhile<I, F, Item, Output> {
     return new MapWhile(this.iter.clone(), this.f)
   }
+
+  size_hint(): [number, Option<number>] {
+    // MapWhile may stop early, so lower bound is 0
+    // Upper bound is the same as the underlying iterator
+    const [_, upper] = this.iter.size_hint()
+    return [0, upper]
+  }
 }

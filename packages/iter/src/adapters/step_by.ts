@@ -31,4 +31,15 @@ export class StepBy<I extends Iterator<Item>, Item = I extends Iterator<infer It
   clone(): StepBy<I, Item> {
     return new StepBy(this.iter.clone(), this.step)
   }
+
+  size_hint(): [number, Option<number>] {
+    const [lower, upper] = this.iter.size_hint()
+    // Divide by step, rounding up
+    const stepped_lower = Math.ceil(lower / this.step)
+    const stepped_upper = upper.match({
+      Some: u => Some(Math.ceil(u / this.step)),
+      None: () => None,
+    })
+    return [stepped_lower, stepped_upper]
+  }
 }

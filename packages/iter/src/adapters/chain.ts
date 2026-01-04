@@ -59,4 +59,21 @@ export class Chain<const Item> extends Iterator<Item> {
     // Clone the original iterators (Rust-like behavior)
     return new Chain(this.original_a.clone(), this.original_b.clone())
   }
+
+  size_hint(): [number, Option<number>] {
+    const [lower_a, upper_a] = this.original_a.size_hint()
+    const [lower_b, upper_b] = this.original_b.size_hint()
+
+    const combined_lower = lower_a + lower_b
+
+    const combined_upper = upper_a.match({
+      Some: u_a => upper_b.match({
+        Some: u_b => Some(u_a + u_b),
+        None: () => None,
+      }),
+      None: () => None,
+    })
+
+    return [combined_lower, combined_upper]
+  }
 }

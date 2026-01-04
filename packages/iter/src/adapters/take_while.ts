@@ -34,4 +34,11 @@ export class TakeWhile<I extends Iterator<Item>, P extends (item: Item) => boole
   clone(): TakeWhile<I, P, Item> {
     return new TakeWhile(this.iter.clone(), this.predicate)
   }
+
+  size_hint(): [number, Option<number>] {
+    // TakeWhile may stop early, so lower bound is 0
+    // Upper bound is the same as the underlying iterator
+    const [_, upper] = this.iter.size_hint()
+    return [0, upper]
+  }
 }

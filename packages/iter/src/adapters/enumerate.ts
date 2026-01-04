@@ -37,4 +37,8 @@ export class Enumerate<Item, I extends Iterator<Item> = Iterator<Item>, Output =
   clone(): Enumerate<Item, I, Output> {
     return new Enumerate(this.iter.clone())
   }
+
+  size_hint(): [number, Option<number>] {
+    return this.iter.size_hint()
+  }
 }

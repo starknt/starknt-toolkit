@@ -1,5 +1,5 @@
 import type { Option } from '@starknt/utils'
-import { None } from '@starknt/utils'
+import { None, Some } from '@starknt/utils'
 import { Iterator } from '../traits/base'
 
 export class Take<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
@@ -41,5 +41,15 @@ export class Take<const Item, I extends Iterator<Item> = Iterator<Item>> extends
 
   clone(): Take<Item, I> {
     return new Take(this.original_iter.clone(), this.original_n)
+  }
+
+  size_hint(): [number, Option<number>] {
+    const [lower, upper] = this.iter.size_hint()
+    const clamped_lower = Math.min(this.original_n, lower)
+    const clamped_upper = upper.match({
+      Some: u => Some(Math.min(this.original_n, u)),
+      None: () => Some(this.original_n),
+    })
+    return [clamped_lower, clamped_upper]
   }
 }

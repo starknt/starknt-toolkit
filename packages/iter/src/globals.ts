@@ -38,6 +38,10 @@ Array.prototype.iter = function () {
     clone(): Iterator<any> {
       return new IteratorClass()
     }
+
+    size_hint(): [number, Option<number>] {
+      return [this.length - this.idx, Some(this.length - this.idx)]
+    }
   }
   return new IteratorClass()
 }
@@ -49,10 +53,14 @@ Set.prototype.iter = function () {
 
   const IteratorClass = class extends Iterator<any> {
     private values: IterableIterator<any>
+    private initialSize: number
+    private consumed: number
 
     constructor() {
       super()
       this.values = self.values()
+      this.initialSize = self.size
+      this.consumed = 0
     }
 
     clone(): Iterator<any> {
@@ -63,7 +71,13 @@ Set.prototype.iter = function () {
       const entry = this.values.next()
       if (entry.done)
         return None
+      this.consumed++
       return Some(entry.value)
+    }
+
+    size_hint(): [number, Option<number>] {
+      const remaining = Math.max(0, this.initialSize - this.consumed)
+      return [remaining, Some(remaining)]
     }
   }
   return new IteratorClass()
@@ -76,10 +90,14 @@ Map.prototype.iter = function () {
 
   const IteratorClass = class extends Iterator<any> {
     private values: IterableIterator<any>
+    private initialSize: number
+    private consumed: number
 
     constructor() {
       super()
       this.values = self.values()
+      this.initialSize = self.size
+      this.consumed = 0
     }
 
     clone(): Iterator<any> {
@@ -90,7 +108,13 @@ Map.prototype.iter = function () {
       const entry = this.values.next()
       if (entry.done)
         return None
+      this.consumed++
       return Some(entry.value)
+    }
+
+    size_hint(): [number, Option<number>] {
+      const remaining = Math.max(0, this.initialSize - this.consumed)
+      return [remaining, Some(remaining)]
     }
   }
   return new IteratorClass()

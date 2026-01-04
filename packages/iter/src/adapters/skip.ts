@@ -1,5 +1,5 @@
 import type { Option } from '@starknt/utils'
-import { None } from '@starknt/utils'
+import { None, Some } from '@starknt/utils'
 import { Iterator } from '../traits/base'
 
 export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> extends Iterator<Item> {
@@ -76,8 +76,13 @@ export class Skip<const Item, I extends Iterator<Item> = Iterator<Item>> extends
   }
 
   size_hint(): [number, Option<number>] {
-    // not implemented
-    return [0, None]
+    const [lower, upper] = this.iter.size_hint()
+    const skipped_lower = Math.max(0, lower - this.original_n)
+    const skipped_upper = upper.match({
+      Some: u => Some(Math.max(0, u - this.original_n)),
+      None: () => None,
+    })
+    return [skipped_lower, skipped_upper]
   }
 
   clone(): Skip<Item, I> {
