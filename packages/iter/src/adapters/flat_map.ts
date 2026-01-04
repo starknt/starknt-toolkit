@@ -1,5 +1,4 @@
 import type { Option } from '@starknt/utils'
-import type { IntoIterator } from '../interfaces/iter'
 import type { FlattenItem } from './flatten'
 import { None } from '@starknt/utils'
 import { Iterator } from '../traits/iter'
@@ -30,7 +29,7 @@ export class FlatMap<I extends Iterator<any>, F extends (item: Item) => Iterator
       if (outer_item.isNone())
         return None
 
-      this.inner = (this.f as (item: Item) => IntoIterator<Output>)(outer_item.value).into_iter()
+      this.inner = this.f(outer_item.value)
     }
   }
 
